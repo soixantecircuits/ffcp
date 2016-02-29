@@ -1,0 +1,42 @@
+<meta charset="UTF-8">
+<head>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <div class="image-container" >
+        <img class="scale" data-scale="fill" data-align="center" src="test.jpg">
+    </div>
+    <div class="wrap">
+        <div class="action">
+            <div class="label">
+                <label>stretches or compresses the source image to fill the target frame</label>
+            </div>
+            <input type="button" value="Click" id="fill" />
+        </div>
+        <div class="action">
+            <div class="label">
+                <label>fits the shortest side of the source image</label>
+            </div>
+            <input type="button" value="Click" id="best-fill" />
+        </div>
+        <div class="action">
+            <div class="label">
+                <label>fits the longest edge of the source image</label>
+            </div>
+            <input type="button" value="Click" id="best-fit"/>
+        </div>
+        <div class="action">
+            <div class="label">
+                <label>same as best-fit but will not stretch the source if it is smaller than the target</label>
+            </div>
+            <input type="button" value="Click" id="best-fit-down"/>
+        </div>
+        <div class="action">
+            <div class="label">
+                <label> the source image is left unscaled</label>
+            </div>
+            <input type="button" value="Click" id="none"/>
+        </div>
+    </div>
+    <script src='./dist/bundle.js'></script>
+</body>
