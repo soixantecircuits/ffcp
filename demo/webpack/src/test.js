@@ -1,25 +1,29 @@
-var ScaledImage = require('../../../dist/ffcp.js')
+let ImageScale = require('../../../src/ffcp.js')
 
-var img = document.querySelector('img')
+let instance = new ImageScale()
 
-var instance = new ScaledImage(img)
+  instance.resize(
+    document.querySelector('.example-3'),
+    document.querySelector('.example-3 .content')
+  );
 
-document.getElementById('fill').addEventListener('click', function() {
-  change('fill')
-})
-document.getElementById('best-fill').addEventListener('click', function() {
-  change('best-fill')
-})
-document.getElementById('best-fit').addEventListener('click', function() {
-  change('best-fit')
-})
-document.getElementById('best-fit-down').addEventListener('click', function() {
-  change('best-fit-down')
-})
-document.getElementById('none').addEventListener('click', function() {
-  change('none')
-})
+  console.log(instance.getSizes({
+    content_width    : 200,
+    content_height   : 300,
+    container_width  : 600,
+    container_height : 400
+  }, 'cartesian'))
 
-function change(method) {
-  instance.scale({scale: method})
-}
+
+  console.log(instance.getSizes({
+    content_width    : 200.4,
+    content_height   : 300.5,
+    container_width  : 600.6,
+    container_height : 400.7,
+    fit_type         : 'fit',
+    alignment_x      : 'center',
+    alignment_y      : 'center',
+    rounding         : 'floor',
+    coordinates      : 'cartesian'
+  }))
+
