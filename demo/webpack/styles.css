@@ -25,6 +25,16 @@
     width:460px;
     display: inline-block;
 }
-.container {background:#ddd;margin:20px; width: 400px; height:400px;}
-.container.example {width:300px;height:160px;}
+.container {
+  background:#ddd;
+  margin:20px;
+  width: 400px;
+  height:400px;
+  overflow:hidden;
+ }
+.container.example {
+  width:300px;
+  height:160px;
+  overflow:hidden;
+ }
 
