@@ -1,22 +1,18 @@
 'use strict'
 
-const options =   {
-  force_style : true,
-  parse       : true,
-  target      : document.body,
-  auto_resize : true,
-  classes     :
-  {
-    to_resize : 'b-resize',
-    content   : 'b-content'
-  }
-}
-
-class Resizer
-{
-  constructor()
-  {
-
+class Resizer {
+  constructor() {
+    this.options = {
+      force_style : true,
+      parse       : true,
+      target      : document.body,
+      auto_resize : true,
+      classes     :
+      {
+        to_resize : 'b-resize',
+        content   : 'b-content'
+      }
+    }
     // Set up
     this.elements = []
 
@@ -29,8 +25,7 @@ class Resizer
       this.initAutoResize()
   }
 
-  initAutoResize()
-  {
+  initAutoResize() {
     //TODO: Implement auto-resize
     let that = this
 
@@ -39,8 +34,7 @@ class Resizer
     return this
   }
 
-  parse(target, selector)
-  {
+  parse(target, selector) {
     // Default options
     target   = target   || options.target
     selector = selector || options.classes.to_resize
@@ -65,8 +59,7 @@ class Resizer
     return this
   }
 
-  resizeAll()
-  {
+  resizeAll() {
     for(let i = 0, len = this.elements.length; i < len; i++)
     {
       var element = this.elements[i]
@@ -76,8 +69,7 @@ class Resizer
     return this
   }
 
-  resize(container, content, force_style)
-  {
+  resize(container, content, force_style) {
     // Errors
     let errors = []
 

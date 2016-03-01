@@ -1,4 +1,4 @@
-let ImageScale = require('../../../src/ffcp.js')
+let ImageScale = require('../../../dist/ffcp.js')
 
 let instance = new ImageScale()
 
