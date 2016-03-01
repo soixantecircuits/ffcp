@@ -7,31 +7,82 @@
   <link rel="stylesheet" type="text/css" href="./styles.css">
 </head>
 <body>
+ 
+ <div class='auto-target'>
+  <h2>Auto trigger scale at loading</h2>
+    <div class="group-image">
+      <div class="container do-container">
+        <img class="example do-content" data-scale="best-fit" src="test3.png" id="img-1">
+      </div>
+      <h3>Same image with different alignement</h3>
+        <div class="block">
+          <h4>Align left</h4>
+          <div class="container small">
+            <img class="example do-content" data-scale="best-fit" data-align="left" src="test3.png" id="img-1">
+          </div>
+        </div>
+        <div class="block">
+          <h4>Align right</h4>
+          <div class="container small">
+            <img class="example do-content" data-scale="best-fit" data-align="right" src="test3.png">
+          </div>
+        </div>
+        <div class="block">
+          <h4>Align middle</h4>
+          <div class="container small">
+            <img class="example do-content" data-scale="best-fit" data-align="center" src="test3.png">
+          </div>
+        </div>
+        <div class="block">
+          <h4>Align top-left</h4>
+          <div class="container small">
+            <img class="example do-content" data-scale="best-fit" data-align="top-left" src="test3.png">
+          </div>
+        </div>
+        <div class="block">
+          <h4>Align top-right</h4>
+          <div class="container small">
+            <img class="example do-content" data-scale="best-fit" data-align="top-right" src="test3.png">
+          </div>
+        </div>
+    </div>
 
-<div class="container do-container" id="container-1">
-  <img class="example do-content" data-scale="best-fit" src="test1.jpg" id="img-1">
-</div>
-<div class="container do-container" id="container-2">
-  <img class="example do-content" data-scale="best-fit" src="test2.jpg" id="img-2">
-</div>
-<div class="container do-container" id="container-3">
-  <img class="example do-content" data-scale="best-fit" src="test3.png" id="img-3">
+    <div class="container do-container">
+      <img class="example do-content" data-scale="best-fit" src="test2.jpg">
+    </div>
+    <div class="container do-container">
+      <img class="example do-content" data-scale="best-fit" src="test1.jpg">
+    </div>
 </div>
 
-<div class="wrap">
-  <div class="action">
-    <input type="button" value="fill" id="fill"/>
-  </div>
-  <div class="action">
-    <input type="button" value="best-fill" id="fill-short"/>
-  </div>
-  <div class="action">
-    <input type="button" value="best-fit" id="fill-long"/>
-  </div>
-  <div class="action">
-    <input type="button" value="best-fit-down" id="best-fit-down"/>
-  </div>
 
+<div class='manual-target'>  
+ <h2>Trigerring scale function manually</h2>
+  <div class="wrap">
+    <div class="action">
+      <input type="button" value="fill" id="fill"/>
+    </div>
+    <div class="action">
+      <input type="button" value="best-fill" id="fill-short"/>
+    </div>
+    <div class="action">
+      <input type="button" value="best-fit" id="fill-long"/>
+    </div>
+    <div class="action">
+      <input type="button" value="best-fit-down" id="best-fit-down"/>
+    </div>
+  </div>
+  <div class="group-image">
+    <div class="container do-container" id="container-1">
+      <img class="example do-content" src="test1.jpg" id="img-1">
+    </div>
+    <div class="container do-container" id="container-2">
+      <img class="example do-content" src="test2.jpg" id="img-2">
+    </div>
+    <div class="container do-container" id="container-3">
+      <img class="example do-content" src="test3.png" id="img-3">
+    </div>
+  </div>
 </div>
 
 <script src='./dist/bundle.js'></script>
