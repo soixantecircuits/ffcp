@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,66 +6,63 @@
   <title>ffcp demo - Resizer</title>
 
   <style>
-    .container {background:#ddd;margin:20px;}
-    .container.example-1 {width:300px;height:160px;}
-    .container.example-2 {width:300px;height:160px;}
-    .container.example-3 {width:300px;height:160px;}
-    .container.example-4 {width:160px;height:300px;}
-    .container.example-5 {width:50%;height:160px;}
-    .container.example-6 {width:10%;height:300px;}
-    .container.example-7 {width:300px;height:160px;}
-    .container.example-8 {width:300px;height:160px;}
-    .container.example-9 {width:300px;height:160px;}
-    .container.example-10 {width:300px;height:160px;}
-    .container.example-10 .content {background:#eee;}
-    .container.example-11 {width:160px;height:300px;}
-    .container.example-11 .content {background:#eee;}
+    .image-container {
+      width:500px;
+      height:250px;
+      margin: 0 auto;
+      border:1px solid black;
+    }
+
+    .scale {
+      width:168px;
+      height: 252px;
+    }
+
+    .wrap {
+      width:500px;
+      height: auto;
+      font-size:14px;
+      display: inline;
+    }
+
+    .action {
+      padding:12px;
+    }
+
+    .label {
+      width:460px;
+      display: inline-block;
+    }
+    .container {background:#ddd;margin:20px; width: 400px; height:400px;}
+    .container.example {width:300px;height:160px;}
   </style>
 </head>
 <body>
 
-<div class="container example-1 b-resize">
-  <img class="b-content" src="test.jpg" alt="" width="512" height="512">
+<div class="container do-container" id="container-1">
+  <img class="example do-content" data-scale="best-fit" src="test1.jpg" id="img-1">
+</div>
+<div class="container do-container" id="container-2">
+  <img class="example do-content" data-scale="best-fit" src="test2.jpg" id="img-2">
+</div>
+<div class="container do-container" id="container-3">
+  <img class="example do-content" data-scale="best-fit" src="test3.png" id="img-3">
 </div>
 
-<div class="container example-2 b-resize">
-  <img class="b-content" src="test.jpg" alt="" width="512" height="512" data-align-y="top">
-</div>
+<div class="wrap">
+  <div class="action">
+    <input type="button" value="fill" id="fill"/>
+  </div>
+  <div class="action">
+    <input type="button" value="best-fill" id="fill-short"/>
+  </div>
+  <div class="action">
+    <input type="button" value="best-fit" id="fill-long"/>
+  </div>
+  <div class="action">
+    <input type="button" value="best-fit-down" id="best-fit-down"/>
+  </div>
 
-<div class="container example-3 b-resize">
-  <img class="b-content" src="test.jpg" alt="" width="512" height="512" data-align-y="bottom">
-</div>
-
-<div class="container example-4 b-resize">
-  <img class="b-content" src="test.jpg" alt="" width="512" height="512">
-</div>
-
-<div class="container example-5 b-resize">
-  <img class="b-content" src="test.jpg" alt="" width="512" height="512">
-</div>
-
-<div class="container example-6 b-resize">
-  <img class="b-content" src="test.jpg" alt="" width="512" height="512">
-</div>
-
-<div class="container example-7 b-resize">
-  <img class="b-content" src="test.jpg" alt="" width="512" height="512" data-align-y="top" data-fit-type="fit">
-</div>
-
-<div class="container example-8 b-resize">
-  <img class="b-content" src="test.jpg" alt="" width="100%" height="100%" data-fit-type="fill">
-</div>
-
-<div class="container example-9 b-resize">
-  <img class="b-content" src="test.jpg" alt="" width="512" height="512" data-align-y="top" data-fit-type="fit" data-align-x="right">
-</div>
-
-<div class="container example-10 b-resize">
-  <div class="b-content" data-width="512" data-height="512" data-fit-type="fit">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloremque ipsum voluptas voluptates error commodi aut ea obcaecati qui ratione in suscipit rerum numquam iusto.</div>
-</div>
-
-<div class="container example-11 b-resize">
-  <div class="b-content" data-width="512" data-height="512" data-fit-type="fit">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloremque ipsum voluptas voluptates error commodi aut ea obcaecati qui ratione in suscipit rerum numquam iusto.</div>
 </div>
 
 <script src='./dist/bundle.js'></script>

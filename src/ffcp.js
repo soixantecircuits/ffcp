@@ -1,27 +1,45 @@
 'use strict'
 
+const CONSTANTS = {
+  NONE: 'none',
+  FILL: 'fill',
+  BEST_FILL: 'best-fill',
+  BEST_FIT: 'best-fit',
+  BEST_FIT_DOWN_ONLY: 'best-fit-down',
+  ALIGN_LEFT: 'left',
+  ALIGN_RIGHT: 'right',
+  ALIGN_CENTER: 'center',
+  ALIGN_TOP: 'top',
+  ALIGN_BOTTOM: 'bottom',
+  ALIGN_TOP_LEFT: 'top-left',
+  ALIGN_TOP_RIGHT: 'top-right',
+  ALIGN_BOTTOM_LEFT: 'bottom-left',
+  ALIGN_BOTTOM_RIGHT: 'bottom-right'
+}
+
 class Resizer {
   constructor() {
     this.options = {
+      scale       : 'best-fill',
+      align       : 'center',
       force_style : true,
       parse       : true,
       target      : document.body,
       auto_resize : true,
-      classes     :
-      {
-        to_resize : 'b-resize',
-        content   : 'b-content'
+      classes     : {
+        to_resize : 'do-container',
+        content   : 'do-content'
       }
     }
     // Set up
     this.elements = []
 
     // Parse
-    if(options.parse)
+    if(this.options.parse)
       this.parse()
 
     // Auto resize
-    if(options.auto_resize)
+    if(this.options.auto_resize)
       this.initAutoResize()
   }
 
@@ -36,40 +54,49 @@ class Resizer {
 
   parse(target, selector) {
     // Default options
-    target   = target   || options.target
-    selector = selector || options.classes.to_resize
+    target   = target   || this.options.target
+    selector = selector || this.options.classes.to_resize
 
     this.elements = []
+    this.cachedElements = []
     let containers = target.querySelectorAll('.' + selector)
 
-    for(let i = 0, len = containers.length; i < len; i++)
-    {
+    for(let i = 0, len = containers.length; i < len; i++) {
       let container = containers[i],
-        content   = container.querySelector('.' + options.classes.content)
+        content   = container.querySelector('.' + this.options.classes.content)
 
-      if(content)
-      {
-        this.elements.push(
-          {
+      if(content) {
+        this.elements.push({
             container : container,
             content   : content
-          } )
+          })
+        this.cachedElements.push({
+          container: {
+            width: container.width,
+            height: container.height
+          },
+          content: {
+            width: content.width,
+            height: content.height
+          }
+        })
       }
     }
     return this
   }
 
-  resizeAll() {
-    for(let i = 0, len = this.elements.length; i < len; i++)
-    {
-      var element = this.elements[i]
-
-      this.resize(element.container, element.content)
+  resizeAll(options) {
+    for(let i = 0, len = this.elements.length; i < len; i++) {
+      let element = this.elements[i]
+      let cache = this.cachedElements[i]
+      Object.assign(element.content, cache.content)
+      Object.assign(element.container, cache.container)
+      this.resize(element.container, element.content, options)
     }
     return this
   }
 
-  resize(container, content, force_style) {
+  resize(container, content, options) {
     // Errors
     let errors = []
 
@@ -89,24 +116,22 @@ class Resizer {
 
     // Parameters
     let parameters = {}
-    parameters.container_width  = container.getAttribute('data-width')  || container.getAttribute('width')  || container.offsetWidth
-    parameters.container_height = container.getAttribute('data-height') || container.getAttribute('height') || container.offsetHeight
-    parameters.content_width    = content.getAttribute('data-width')    || content.getAttribute('width')    || content.offsetWidth
-    parameters.content_height   = content.getAttribute('data-height')   || content.getAttribute('height')   || content.offsetHeight
-    parameters.fit_type         = content.getAttribute('data-fit-type')
-    parameters.align_x          = content.getAttribute('data-align-x')
-    parameters.align_y          = content.getAttribute('data-align-y')
-    parameters.rounding         = content.getAttribute('data-rounding')
+    options = options ? options : {}
+    parameters.container_width  = options.containerWidth || container.getAttribute('data-width')  || container.getAttribute('width')  || container.offsetWidth
+    parameters.container_height = options.containerHeight || container.getAttribute('data-height') || container.getAttribute('height') || container.offsetHeight
+    parameters.content_width    = options.contentWidth || content.getAttribute('data-width')    || content.getAttribute('width')    || content.offsetWidth
+    parameters.content_height   = options.contentHeight || content.getAttribute('data-height')   || content.getAttribute('height')   || content.offsetHeight
+    parameters.align            = options.align || content.getAttribute('data-align')
+    parameters.scale            = options.scale || content.getAttribute('data-scale')
 
-    let sizes = this.getSizes(parameters)
+    //let sizes = this.getSizes(parameters)
+    //
+    //if(!sizes)
+    //  return false
 
-    if(!sizes)
-      return false
+    options.force_style = !!options.force_style
 
-    force_style = typeof force_style === 'undefined' ? options.force_style : force_style
-
-    if(force_style)
-    {
+    if(options.force_style) {
       let container_style = window.getComputedStyle(container),
         content_style   = window.getComputedStyle(content)
 
@@ -120,16 +145,34 @@ class Resizer {
         container.style.overflow = 'hidden'
     }
 
-    content.style.top    = sizes.css.top
-    content.style.left   = sizes.css.left
-    content.style.width  = sizes.css.width
-    content.style.height = sizes.css.height
+    //content.style.top    = sizes.css.top
+    //content.style.left   = sizes.css.left
+    //content.style.width  = sizes.css.width
+    //content.style.height = sizes.css.height
+
+    let dest = {}
+    dest.width = parameters.container_width
+    dest.height = parameters.container_height
+
+    let source = {}
+    source.width = parameters.content_width
+    source.height = parameters.content_height
+
+    let layout = this._innerFrameForSize(parameters.scale, parameters.align, source, dest)
+
+    content.style.position = 'relative'
+    //content.style.top = layout.y+'px'
+    //content.style.left = layout.x+'px'
+    content.style.width = layout.width+'px'
+    content.style.height = layout.height+'px'
+    content.style.maxWidth = 'none'
+    content.style.margin = 0
+    content.style.display = 'block'
 
     return this
   }
 
-  getSizes(parameters, format)
-  {
+  getSizes(parameters, format) {
     let errors = []
 
     if(typeof parameters.content_width === 'undefined' || parseInt(parameters.content_width, 10) === 0)
@@ -270,6 +313,81 @@ class Resizer {
       return sizes.cartesian
     else if(format === 'css')
       return sizes.css
+  }
+
+  _innerFrameForSize(scale, align, source, dest){
+
+    let scaleX, scaleY, result, scaleFactor
+
+    result = { x: 0, y: 0, width: dest.width, height: dest.height }
+    if (scale === CONSTANTS.FILL) return result
+
+    scaleX = dest.width / source.width
+    scaleY = dest.height / source.height
+
+    switch (scale) {
+      case CONSTANTS.BEST_FIT_DOWN_ONLY:
+        if ((source.width > dest.width) || (source.height > dest.height)) {
+          scaleFactor = scaleX < scaleY ? scaleX : scaleY
+        } else {
+          scaleFactor = 1.0
+        }
+        break
+      case CONSTANTS.BEST_FIT:
+        scaleFactor = scaleX < scaleY ? scaleX : scaleY
+        break
+      case CONSTANTS.NONE:
+        scaleFactor = 1.0
+        break
+      case CONSTANTS.BEST_FILL:
+      default:
+        scaleFactor = scaleX > scaleY ? scaleX : scaleY
+        break
+    }
+
+    result.width = Math.round(source.width * scaleFactor)
+    result.height = Math.round(source.height * scaleFactor)
+
+    switch (align) {
+      case this.ALIGN_LEFT:
+        result.x = 0;
+        result.y = (dest.height / 2) - (source.height / 2);
+        break;
+      case this.ALIGN_RIGHT:
+        result.x =  - source.width;
+        result.y = (dest.height / 2) - (source.height / 2);
+        break;
+      case this.ALIGN_TOP:
+        result.x = (dest.width / 2) - (source.width / 2);
+        result.y = 0;
+        break;
+      case this.ALIGN_BOTTOM:
+        result.x = (dest.width / 2) - (source.width / 2);
+        result.y = dest.height - source.height;
+        break;
+      case this.ALIGN_TOP_LEFT:
+        result.x = 0;
+        result.y = 0;
+        break;
+      case this.ALIGN_TOP_RIGHT:
+        result.x = dest.width - source.width;
+        result.y = 0;
+        break;
+      case this.ALIGN_BOTTOM_LEFT:
+        result.x = 0;
+        result.y = dest.height - source.height;
+        break;
+      case this.ALIGN_BOTTOM_RIGHT:
+        result.x = dest.width - source.width;
+        result.y = dest.height - source.height;
+        break;
+      default: // this.ALIGN_CENTER
+        result.x = (dest.width / 2) - (source.width / 2);
+        result.y = (dest.height / 2) - (source.height / 2);
+    }
+
+    return result
+
   }
 }
 module.exports = Resizer
