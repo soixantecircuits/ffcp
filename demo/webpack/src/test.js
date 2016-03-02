@@ -1,14 +1,27 @@
-let resizer = require('../../../src/ffcp.js')
+let Resizer = require('../../../src/ffcp.js')
 
-let instance = new resizer()
+let initResize = new Resizer()
 
-var buttons = document.getElementsByTagName('input')
-function handleClick(e) {
-  let options = {
-    scale: e.srcElement.value
+let square = new Resizer({target: document.getElementById('square')})
+
+let landscape = new Resizer({target: document.getElementById('landscape')})
+
+let portrait = new Resizer({target: document.getElementById('portrait')})
+
+function createHandler(resizer) {
+  return function (e) {
+    resizer.resizeAll({scale: e.srcElement.value})
   }
-  instance.resizeAll(options)
 }
-Array.prototype.forEach.call(buttons, (button) => {
-  button.onclick = handleClick
+let squareButtons = document.querySelectorAll('input.sqr ')
+Array.prototype.forEach.call(squareButtons, (button) => {
+  button.onclick = createHandler(square)
+})
+let landscapeButtons = document.querySelectorAll('input.lndscp')
+Array.prototype.forEach.call(landscapeButtons, (button) => {
+  button.onclick = createHandler(landscape)
+})
+let portraitButtons = document.querySelectorAll('input.prtrt')
+Array.prototype.forEach.call(portraitButtons, (button) => {
+  button.onclick = createHandler(portrait)
 })

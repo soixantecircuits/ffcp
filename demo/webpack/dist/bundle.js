@@ -54,19 +54,32 @@
 
 	'use strict';
 
-	var resizer = __webpack_require__(2);
+	var Resizer = __webpack_require__(2);
 
-	var instance = new resizer();
+	var initResize = new Resizer();
 
-	var buttons = document.getElementsByTagName('input');
-	function handleClick(e) {
-	  var options = {
-	    scale: e.srcElement.value
+	var square = new Resizer({ target: document.getElementById('square') });
+
+	var landscape = new Resizer({ target: document.getElementById('landscape') });
+
+	var portrait = new Resizer({ target: document.getElementById('portrait') });
+
+	function createHandler(resizer) {
+	  return function (e) {
+	    resizer.resizeAll({ scale: e.srcElement.value });
 	  };
-	  instance.resizeAll(options);
 	}
-	Array.prototype.forEach.call(buttons, function (button) {
-	  button.onclick = handleClick;
+	var squareButtons = document.querySelectorAll('input.sqr ');
+	Array.prototype.forEach.call(squareButtons, function (button) {
+	  button.onclick = createHandler(square);
+	});
+	var landscapeButtons = document.querySelectorAll('input.lndscp');
+	Array.prototype.forEach.call(landscapeButtons, function (button) {
+	  button.onclick = createHandler(landscape);
+	});
+	var portraitButtons = document.querySelectorAll('input.prtrt');
+	Array.prototype.forEach.call(portraitButtons, function (button) {
+	  button.onclick = createHandler(portrait);
 	});
 
 /***/ },
@@ -89,15 +102,11 @@
 	  ALIGN_RIGHT: 'right',
 	  ALIGN_CENTER: 'center',
 	  ALIGN_TOP: 'top',
-	  ALIGN_BOTTOM: 'bottom',
-	  ALIGN_TOP_LEFT: 'top-left',
-	  ALIGN_TOP_RIGHT: 'top-right',
-	  ALIGN_BOTTOM_LEFT: 'bottom-left',
-	  ALIGN_BOTTOM_RIGHT: 'bottom-right'
+	  ALIGN_BOTTOM: 'bottom'
 	};
 
 	var Resizer = function () {
-	  function Resizer() {
+	  function Resizer(options) {
 	    _classCallCheck(this, Resizer);
 
 	    this.options = {
@@ -107,16 +116,18 @@
 	      parse: true,
 	      target: document.body,
 	      auto_resize: true,
+	      rounding: 'ceil',
 	      classes: {
 	        to_resize: 'do-container',
 	        content: 'do-content'
 	      }
 	    };
+	    Object.assign(this.options, options);
 	    // Set up
 	    this.elements = [];
 
 	    // Parse
-	    if (this.options.parse) this.parse();
+	    if (this.options.parse) this.parse(this.options.target);
 
 	    // Auto resize
 	    if (this.options.auto_resize) this.initAutoResize();
@@ -155,7 +166,6 @@
 	          });
 	          content.style.display = 'none';(function waitTillContentReady(container, content, index) {
 	            content.onload = function () {
-	              console.log('aaa');
 	              content.style.display = 'block';
 	              self.cachedElements[index] = {
 	                container: {
@@ -211,11 +221,12 @@
 	      parameters.container_height = options.containerHeight || container.getAttribute('data-height') || container.getAttribute('height') || container.offsetHeight;
 	      parameters.content_width = options.contentWidth || content.getAttribute('data-width') || content.getAttribute('width') || content.offsetWidth;
 	      parameters.content_height = options.contentHeight || content.getAttribute('data-height') || content.getAttribute('height') || content.offsetHeight;
+	      parameters.scale = options.scale || content.getAttribute('data-scale');
+	      parameters.rounding = options.rounding || content.getAttribute('data-rounding');
 	      parameters.align = {
 	        x: options.align_x || content.getAttribute('data-align-x'),
 	        y: options.align_y || content.getAttribute('data-align-y')
 	      };
-	      parameters.scale = options.scale || content.getAttribute('data-scale');
 
 	      options.force_style = !!options.force_style;
 
@@ -240,6 +251,13 @@
 
 	      var layout = this._innerFrameForSize(parameters.scale, parameters.align, source, dest);
 
+	      if (['ceil', 'floor', 'round'].indexOf(parameters.rounding) !== -1) {
+	        layout.width = Math[parameters.rounding].call(this, layout.width);
+	        layout.height = Math[parameters.rounding].call(this, layout.height);
+	        layout.x = Math[parameters.rounding].call(this, layout.x);
+	        layout.y = Math[parameters.rounding].call(this, layout.y);
+	      }
+
 	      content.style.position = 'relative';
 	      content.style.top = layout.y + 'px';
 	      content.style.left = layout.x + 'px';
@@ -261,7 +279,7 @@
 	          scaleFactor = undefined;
 
 	      result = { x: 0, y: 0, width: dest.width, height: dest.height };
-	      if (scale === CONSTANTS.FILL) return result;
+	      if (scale === 'fill') return result;
 
 	      scaleX = dest.width / source.width;
 	      scaleY = dest.height / source.height;

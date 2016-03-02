@@ -138,7 +138,6 @@
   <h3>Scale "best fill"</h3>
 </div>
 
-
 <div class='auto-target'>
   <div class="group-image">
     <div class="block">
@@ -221,84 +220,90 @@
   <h3>Scale "best fit down"</h3>
 </div>
 <br>
+  <!--LESHA HUESOS-->
 <div class='manual-target'>
  <h1>Trigerring scale function manually</h1>
   <div class="wrap">
     <div class="action">
-      <input type="button" value="fill"/>
+      <input class="sqr" type="button" value="fill"/>
     </div>
     <div class="action">
-      <input type="button" value="best-fill"/>
+      <input class="sqr" type="button" value="best-fill"/>
     </div>
     <div class="action">
-      <input type="button" value="best-fit"/>
+      <input class="sqr" type="button" value="best-fit"/>
     </div>
     <div class="action">
-      <input type="button" value="best-fit-down"/>
+      <input class="sqr" type="button" value="best-fit-down"/>
+
     </div>
-  </div>
-  <div class="group-image">
-    <div class="block landscape container do-container">
-      <img class="example do-content" src="test1.jpg">
-    </div>
-    <div class="block portrait container do-container">
-      <img class="example do-content" src="test1.jpg">
-    </div>
-    <div class="block square container do-container">
-      <img class="example do-content" src="test1.jpg">
-    </div>
-  </div>
-  <div class="wrap">
-    <div class="action">
-      <input type="button" value="fill"/>
-    </div>
-    <div class="action">
-      <input type="button" value="best-fill"/>
-    </div>
-    <div class="action">
-      <input type="button" value="best-fit"/>
-    </div>
-    <div class="action">
-      <input type="button" value="best-fit-down"/>
-    </div>
-  </div>
-  <div class="group-image">
-    <div class="block landscape container do-container">
-      <img class="example do-content" src="test2.jpg">
-    </div>
-    <div class="block portrait container do-container">
-      <img class="example do-content" src="test2.jpg">
-    </div>
-    <div class="block square container do-container">
-      <img class="example do-content" src="test2.jpg">
-    </div>
-  </div>
-  <div class="wrap">
-    <div class="action">
-      <input type="button" value="fill"/>
-    </div>
-    <div class="action">
-      <input type="button" value="best-fill"/>
-    </div>
-    <div class="action">
-      <input type="button" value="best-fit"/>
-    </div>
-    <div class="action">
-      <input type="button" value="best-fit-down"/>
+    <div class="group-image" id="square">
+      <div class="block landscape container do-container">
+        <img class="example do-content" src="test1.jpg">
+      </div>
+      <div class="block portrait container do-container">
+        <img class="example do-content" src="test1.jpg">
+      </div>
+      <div class="block square container do-container">
+        <img class="example do-content" src="test1.jpg">
+      </div>
     </div>
   </div>
 
-  <div class="group-image">
-    <div class="block landscape container do-container">
-      <img class="example do-content" src="http://www.astray.com/static/earth-huge.png">
+  <div class="wrap">
+    <div class="action">
+      <input class="prtrt" type="button" value="fill"/>
     </div>
-    <div class="block portrait container do-container">
-      <img class="example do-content" src="http://www.astray.com/static/earth-huge.png">
+    <div class="action">
+      <input class="prtrt" type="button" value="best-fill"/>
     </div>
-    <div class="block square container do-container">
-      <img class="example do-content" src="http://www.astray.com/static/earth-huge.png">
+    <div class="action">
+      <input class="prtrt" type="button" value="best-fit"/>
+    </div>
+    <div class="action">
+      <input class="prtrt" type="button" value="best-fit-down"/>
+
+    </div>
+    <div class="group-image" id="portrait">
+      <div class="block landscape container do-container">
+        <img class="example do-content" src="test2.jpg">
+      </div>
+      <div class="block portrait container do-container">
+        <img class="example do-content" src="test2.jpg">
+      </div>
+      <div class="block square container do-container">
+        <img class="example do-content" src="test2.jpg">
+      </div>
     </div>
   </div>
+
+  <div class="wrap">
+    <div class="action">
+      <input class="lndscp" type="button" value="fill"/>
+    </div>
+    <div class="action">
+      <input class="lndscp" type="button" value="best-fill"/>
+    </div>
+    <div class="action">
+      <input class="lndscp" type="button" value="best-fit"/>
+    </div>
+    <div class="action">
+      <input class="lndscp" type="button" value="best-fit-down"/>
+
+    </div>
+    <div class="group-image" id="landscape">
+      <div class="block landscape container do-container">
+        <img class="example do-content" src="test3.png">
+      </div>
+      <div class="block portrait container do-container">
+        <img class="example do-content" src="test3.png">
+      </div>
+      <div class="block square container do-container">
+        <img class="example do-content" src="test3.png">
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <script src='./dist/bundle.js'></script>

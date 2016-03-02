@@ -14,7 +14,7 @@ const CONSTANTS = {
 }
 
 class Resizer {
-  constructor() {
+  constructor(options) {
     this.options = {
       scale       : 'best-fill',
       align       : 'center',
@@ -28,12 +28,13 @@ class Resizer {
         content   : 'do-content'
       }
     }
+    Object.assign(this.options, options)
     // Set up
     this.elements = []
 
     // Parse
     if(this.options.parse)
-      this.parse()
+      this.parse(this.options.target)
 
     // Auto resize
     if(this.options.auto_resize)
@@ -186,7 +187,7 @@ class Resizer {
     let scaleX, scaleY, result, scaleFactor
 
     result = { x: 0, y: 0, width: dest.width, height: dest.height }
-    if (scale === CONSTANTS.FILL) return result
+    if (scale === 'fill') return result
 
     scaleX = dest.width / source.width
     scaleY = dest.height / source.height
