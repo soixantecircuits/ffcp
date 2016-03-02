@@ -33,7 +33,18 @@
   height:400px;
   overflow:hidden;
  }
- 
+.landscape {
+    width: 480px;
+    height:270px;
+}
+.portrait {
+    width: 270px;
+    height:480px;
+}
+.square {
+    width: 300px;
+    height: 300px;
+}
  .container.small{
    overflow: hidden;
    width:200px;
@@ -50,8 +61,6 @@
  
  .block{
   overflow: hidden;
-  width: 222px;
-  height: 300px;
   display: block;
   float:left
 }
