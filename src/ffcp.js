@@ -10,11 +10,7 @@ const CONSTANTS = {
   ALIGN_RIGHT: 'right',
   ALIGN_CENTER: 'center',
   ALIGN_TOP: 'top',
-  ALIGN_BOTTOM: 'bottom',
-  ALIGN_TOP_LEFT: 'top-left',
-  ALIGN_TOP_RIGHT: 'top-right',
-  ALIGN_BOTTOM_LEFT: 'bottom-left',
-  ALIGN_BOTTOM_RIGHT: 'bottom-right'
+  ALIGN_BOTTOM: 'bottom'
 }
 
 class Resizer {
@@ -131,11 +127,14 @@ class Resizer {
     parameters.container_height = options.containerHeight || container.getAttribute('data-height') || container.getAttribute('height') || container.offsetHeight
     parameters.content_width    = options.contentWidth || content.getAttribute('data-width')    || content.getAttribute('width')    || content.offsetWidth
     parameters.content_height   = options.contentHeight || content.getAttribute('data-height')   || content.getAttribute('height')   || content.offsetHeight
+    parameters.scale            = options.scale || content.getAttribute('data-scale')
+    parameters.rounding         = options.rounding || content.getAttribute( 'data-rounding' )
     parameters.align = {
       x: options.align_x || content.getAttribute('data-align-x'),
       y: options.align_y || content.getAttribute('data-align-y')
     }
-    parameters.scale            = options.scale || content.getAttribute('data-scale')
+
+    parameters.rounding = parameters.rounding.toLowerCase()
 
     options.force_style = !!options.force_style
 
@@ -162,6 +161,14 @@ class Resizer {
     source.height = parameters.content_height
 
     let layout = this._innerFrameForSize(parameters.scale, parameters.align, source, dest)
+
+    if(['ceil', 'floor', 'round'].indexOf(parameters.rounding)!== -1)
+    {
+      layout.width  = Math[parameters.rounding].call(this, layout.width)
+      layout.height = Math[parameters.rounding].call(this, layout.height)
+      layout.x      = Math[parameters.rounding].call(this, layout.x)
+      layout.y      = Math[parameters.rounding].call(this, layout.y)
+    }
 
     content.style.position = 'relative'
     content.style.top = layout.y+'px'
