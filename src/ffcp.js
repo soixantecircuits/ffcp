@@ -54,6 +54,7 @@ class Resizer {
 
   parse(target, selector) {
     // Default options
+    let self = this
     target   = target   || this.options.target
     selector = selector || this.options.classes.to_resize
 
@@ -70,16 +71,23 @@ class Resizer {
             container : container,
             content   : content
           })
-        this.cachedElements.push({
-          container: {
-            width: container.width,
-            height: container.height
-          },
-          content: {
-            width: content.width,
-            height: content.height
+        content.style.display = 'none'
+        ;(function waitTillContentReady(container, content, index) {
+          content.onload = function() {
+            content.style.display = 'block'
+            self.cachedElements[index] = {
+              container: {
+                width: container.width,
+                height: container.height
+              },
+              content: {
+                width: content.width,
+                height: content.height
+              }
+            }
+            self.resize(container, content)
           }
-        })
+        })(container, content, i)
       }
     }
     return this
@@ -88,10 +96,12 @@ class Resizer {
   resizeAll(options) {
     for(let i = 0, len = this.elements.length; i < len; i++) {
       let element = this.elements[i]
-      let cache = this.cachedElements[i]
-      Object.assign(element.content, cache.content)
-      Object.assign(element.container, cache.container)
-      this.resize(element.container, element.content, options)
+      if(this.cachedElements[i]) {
+        let cache = this.cachedElements[i]
+        Object.assign(element.content, cache.content)
+        Object.assign(element.container, cache.container)
+        this.resize(element.container, element.content, options)
+      }
     }
     return this
   }
@@ -126,11 +136,6 @@ class Resizer {
       y: options.align_y || content.getAttribute('data-align-y')
     }
     parameters.scale            = options.scale || content.getAttribute('data-scale')
-
-    //let sizes = this.getSizes(parameters)
-    //
-    //if(!sizes)
-    //  return false
 
     options.force_style = !!options.force_style
 
@@ -168,84 +173,6 @@ class Resizer {
     content.style.display = 'block'
 
     return this
-  }
-
-  getSizes(parameters, format) {
-    let errors = []
-
-    if(typeof parameters.content_width === 'undefined' || parseInt(parameters.content_width, 10) === 0)
-      errors.push('content width must be specified')
-
-    if(typeof parameters.content_height === 'undefined' || parseInt(parameters.content_height, 10) === 0)
-      errors.push('content height must be specified')
-
-    if(typeof parameters.container_width === 'undefined' || parseInt(parameters.container_width, 10) === 0)
-      errors.push('container width must be specified')
-
-    if(typeof parameters.container_height === 'undefined' || parseInt(parameters.container_height, 10) === 0)
-      errors.push('container height must be specified')
-
-    if(errors.length)
-      return false
-
-    if(typeof format === 'undefined')
-      format = 'both'
-
-    // Defaults parameters
-    parameters.fit_type = parameters.fit_type || 'fill'
-    parameters.align_x  = parameters.align_x  || 'center'
-    parameters.align_y  = parameters.align_y  || 'center'
-    parameters.rounding = parameters.rounding || 'ceil'
-
-    let content_ratio   = parameters.content_width / parameters.content_height,
-      container_ratio = parameters.container_width / parameters.container_height,
-      width           = 0,
-      height          = 0,
-      x               = 0,
-      y               = 0,
-      fit_in          = null
-
-    parameters.fit_type = parameters.fit_type.toLowerCase()
-    parameters.align_x  = parameters.align_x.toLowerCase()
-    parameters.align_y  = parameters.align_y.toLowerCase()
-    parameters.rounding = parameters.rounding.toLowerCase()
-
-    if(typeof parameters.align_x === 'undefined' || ['left', 'center', 'middle', 'right'].indexOf(parameters.align_x) === -1)
-      parameters.align_x = 'center'
-    if(typeof parameters.align_y === 'undefined' || ['top', 'center', 'middle', 'bottom'].indexOf(parameters.align_y) === -1)
-      parameters.align_y = 'center'
-
-    // Rounding
-    if(['ceil', 'floor', 'round' ].indexOf(parameters.rounding)!== -1)
-    {
-      width  = Math[parameters.rounding].call(this,width)
-      height = Math[parameters.rounding].call(this,height)
-      x      = Math[parameters.rounding].call(this,x)
-      y      = Math[parameters.rounding].call(this,y)
-    }
-
-    let sizes = {}
-
-    sizes.cartesian        = {}
-    sizes.cartesian.width  = width
-    sizes.cartesian.height = height
-    sizes.cartesian.x      = x
-    sizes.cartesian.y      = y
-
-    sizes.css        = {}
-    sizes.css.width  = width + 'px'
-    sizes.css.height = height + 'px'
-    sizes.css.left   = x + 'px'
-    sizes.css.top    = y + 'px'
-
-    sizes.fit_in = fit_in
-
-    if(format === 'both')
-      return sizes
-    else if(format === 'cartesian')
-      return sizes.cartesian
-    else if(format === 'css')
-      return sizes.css
   }
 
   _innerFrameForSize(scale, align, source, dest){
