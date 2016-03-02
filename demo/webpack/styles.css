@@ -47,8 +47,8 @@
 }
  .container.small{
    overflow: hidden;
-   width:200px;
-   height: 150px;
+   width: 150px;
+   height: 200px;
    position: relative;
    float:left;
  }

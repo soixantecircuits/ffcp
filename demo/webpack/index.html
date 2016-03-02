@@ -7,50 +7,222 @@
   <link rel="stylesheet" type="text/css" href="./styles.css">
 </head>
 <body>
- 
- <div class='auto-target'>
-  <h2>Auto trigger scale at loading</h2>
-    <div class="group-image">
-      <div class="container do-container">
-        <img class="example do-content" data-scale="fill" src="test1.jpg">
+
+<div class='auto-target'>
+  <h1>Same image with different alignement</h1>
+  <div class="group-image">
+    <div class="block">
+      <h3>Align left</h3>
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="none" data-align-x="left" data-align-y="center" src="test4.jpg">
       </div>
-      <h3>Same image with different alignement</h3>
-        <div class="block">
-          <h4>Align left</h4>
-          <div class="container do-container small">
-            <img class="example do-content" data-scale="best-fit" data-align-x="left" src="test1.jpg">
-          </div>
-        </div>
-        <div class="block">
-          <h4>Align right</h4>
-          <div class="container do-container small">
-            <img class="example do-content" data-scale="best-fit" data-align-x="right" src="test1.jpg">
-          </div>
-        </div>
-        <div class="block">
-          <h4>Align middle</h4>
-          <div class="container do-container small">
-            <img class="example do-content" data-scale="best-fit" data-align-x="center" src="test1.jpg">
-          </div>
-        </div>
-        <div class="block">
-          <h4>Align bottom-left</h4>
-          <div class="container do-container small">
-            <img class="example do-content" data-scale="best-fit" data-align-y="bottom" data-align-x="left" src="test1.jpg">
-          </div>
-        </div>
-        <div class="block">
-          <h4>Align top-right</h4>
-          <div class="container do-container small">
-            <img class="example do-content" data-scale="best-fit" data-align-y="top" data-align-x="right" src="test1.jpg">
-          </div>
-        </div>
     </div>
+    <div class="block">
+      <h3>Align right</h3>
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="none" data-align-x="right" data-align-y="center" src="test4.jpg">
+      </div>
+    </div>
+    <div class="block">
+      <h3>Align middle</h3>
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="none" data-align-x="center" data-align-y="center" src="test4.jpg">
+      </div>
+    </div>
+    <div class="block">
+      <h3>Align top</h3>
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="none" data-align-x="center" data-align-y="top" src="test4.jpg">
+      </div>
+    </div>
+    <div class="block">
+      <h3>Align bottom</h3>
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="none" data-align-y="bottom" data-align-x="center" src="test4.jpg">
+      </div>
+    </div>
+    <div class="block">
+      <h3>Align top-right</h3>
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="none" data-align-y="top" data-align-x="right" src="test4.jpg">
+      </div>
+    </div>
+    <div class="block">
+      <h3>Align bottom-left</h3>
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="none" data-align-y="bottom" data-align-x="left" src="test4.jpg">
+      </div>
+    </div>
+    <h3>Scale "none"</h3>
+</div>
+
+<div class='auto-target'>
+  <div class="group-image">
+    <div class="block">
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="fill" data-align-x="left" data-align-y="center" src="test4.jpg">
+      </div>
+    </div>
+    <div class="block">
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="fill" data-align-x="right" data-align-y="center" src="test4.jpg">
+      </div>
+    </div>
+    <div class="block">
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="fill" data-align-x="center" data-align-y="center" src="test4.jpg">
+      </div>
+    </div>
+    <div class="block">
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="fill" data-align-x="center" data-align-y="top" src="test4.jpg">
+      </div>
+    </div>
+    <div class="block">
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="fill" data-align-y="bottom" data-align-x="center" src="test4.jpg">
+      </div>
+    </div>
+    <div class="block">
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="fill" data-align-y="top" data-align-x="right" src="test4.jpg">
+      </div>
+    </div>
+    <div class="block">
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="fill" data-align-y="bottom" data-align-x="left" src="test4.jpg">
+      </div>
+    </div>
+  </div>
+  <h3>Scale "fill"</h3>
+</div>
+
+<div class='auto-target'>
+  <div class="group-image">
+    <div class="block">
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="best-fill" data-align-x="left" data-align-y="center" src="test4.jpg">
+      </div>
+    </div>
+    <div class="block">
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="best-fill" data-align-x="right" data-align-y="center" src="test4.jpg">
+      </div>
+    </div>
+    <div class="block">
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="best-fill" data-align-x="center" data-align-y="center" src="test4.jpg">
+      </div>
+    </div>
+    <div class="block">
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="best-fill" data-align-x="center" data-align-y="top" src="test4.jpg">
+      </div>
+    </div>
+    <div class="block">
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="best-fill" data-align-y="bottom" data-align-x="center" src="test4.jpg">
+      </div>
+    </div>
+    <div class="block">
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="best-fill" data-align-y="top" data-align-x="right" src="test4.jpg">
+      </div>
+    </div>
+    <div class="block">
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="best-fill" data-align-y="bottom" data-align-x="left" src="test4.jpg">
+      </div>
+    </div>
+  </div>
+  <h3>Scale "best fill"</h3>
 </div>
 
 
+<div class='auto-target'>
+  <div class="group-image">
+    <div class="block">
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="best-fit" data-align-x="left" data-align-y="center" src="test4.jpg">
+      </div>
+    </div>
+    <div class="block">
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="best-fit" data-align-x="right" data-align-y="center" src="test4.jpg">
+      </div>
+    </div>
+    <div class="block">
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="best-fit" data-align-x="center" data-align-y="center" src="test4.jpg">
+      </div>
+    </div>
+    <div class="block">
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="best-fit" data-align-x="center" data-align-y="top" src="test4.jpg">
+      </div>
+    </div>
+    <div class="block">
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="best-fit" data-align-y="bottom" data-align-x="center" src="test4.jpg">
+      </div>
+    </div>
+    <div class="block">
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="best-fit" data-align-y="top" data-align-x="right" src="test4.jpg">
+      </div>
+    </div>
+    <div class="block">
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="best-fit" data-align-y="bottom" data-align-x="left" src="test4.jpg">
+      </div>
+    </div>
+  </div>
+  <h3>Scale "best fit"</h3>
+</div>
+
+<div class='auto-target'>
+  <div class="group-image">
+    <div class="block">
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="best-fit-down" data-align-x="left" data-align-y="center" src="test4.jpg">
+      </div>
+    </div>
+    <div class="block">
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="best-fit-down" data-align-x="right" data-align-y="center" src="test4.jpg">
+      </div>
+    </div>
+    <div class="block">
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="best-fit-down" data-align-x="center" data-align-y="center" src="test4.jpg">
+      </div>
+    </div>
+    <div class="block">
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="best-fit-down" data-align-x="center" data-align-y="top" src="test4.jpg">
+      </div>
+    </div>
+    <div class="block">
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="best-fit-down" data-align-y="bottom" data-align-x="center" src="test4.jpg">
+      </div>
+    </div>
+    <div class="block">
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="best-fit-down" data-align-y="top" data-align-x="right" src="test4.jpg">
+      </div>
+    </div>
+    <div class="block">
+      <div class="container do-container small">
+        <img class="example do-content" data-scale="best-fit-down" data-align-y="bottom" data-align-x="left" src="test4.jpg">
+      </div>
+    </div>
+  </div>
+  <h3>Scale "best fit down"</h3>
+</div>
+<br>
 <div class='manual-target'>
- <h2>Trigerring scale function manually</h2>
+ <h1>Trigerring scale function manually</h1>
   <div class="wrap">
     <div class="action">
       <input type="button" value="fill"/>
