@@ -22,6 +22,7 @@ class Resizer {
       parse       : true,
       target      : document.body,
       auto_resize : true,
+      rounding    : 'ceil',
       classes     : {
         to_resize : 'do-container',
         content   : 'do-content'
@@ -128,13 +129,11 @@ class Resizer {
     parameters.content_width    = options.contentWidth || content.getAttribute('data-width')    || content.getAttribute('width')    || content.offsetWidth
     parameters.content_height   = options.contentHeight || content.getAttribute('data-height')   || content.getAttribute('height')   || content.offsetHeight
     parameters.scale            = options.scale || content.getAttribute('data-scale')
-    parameters.rounding         = options.rounding || content.getAttribute( 'data-rounding' )
+    parameters.rounding         = options.rounding || content.getAttribute('data-rounding')
     parameters.align = {
       x: options.align_x || content.getAttribute('data-align-x'),
       y: options.align_y || content.getAttribute('data-align-y')
     }
-
-    parameters.rounding = parameters.rounding.toLowerCase()
 
     options.force_style = !!options.force_style
 
