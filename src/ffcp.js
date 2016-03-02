@@ -121,7 +121,10 @@ class Resizer {
     parameters.container_height = options.containerHeight || container.getAttribute('data-height') || container.getAttribute('height') || container.offsetHeight
     parameters.content_width    = options.contentWidth || content.getAttribute('data-width')    || content.getAttribute('width')    || content.offsetWidth
     parameters.content_height   = options.contentHeight || content.getAttribute('data-height')   || content.getAttribute('height')   || content.offsetHeight
-    parameters.align            = options.align || content.getAttribute('data-align')
+    parameters.align = {
+      x: options.align_x || content.getAttribute('data-align-x'),
+      y: options.align_y || content.getAttribute('data-align-y')
+    }
     parameters.scale            = options.scale || content.getAttribute('data-scale')
 
     //let sizes = this.getSizes(parameters)
@@ -145,11 +148,6 @@ class Resizer {
         container.style.overflow = 'hidden'
     }
 
-    //content.style.top    = sizes.css.top
-    //content.style.left   = sizes.css.left
-    //content.style.width  = sizes.css.width
-    //content.style.height = sizes.css.height
-
     let dest = {}
     dest.width = parameters.container_width
     dest.height = parameters.container_height
@@ -161,8 +159,8 @@ class Resizer {
     let layout = this._innerFrameForSize(parameters.scale, parameters.align, source, dest)
 
     content.style.position = 'relative'
-    //content.style.top = layout.y+'px'
-    //content.style.left = layout.x+'px'
+    content.style.top = layout.y+'px'
+    content.style.left = layout.x+'px'
     content.style.width = layout.width+'px'
     content.style.height = layout.height+'px'
     content.style.maxWidth = 'none'
@@ -216,71 +214,6 @@ class Resizer {
       parameters.align_x = 'center'
     if(typeof parameters.align_y === 'undefined' || ['top', 'center', 'middle', 'bottom'].indexOf(parameters.align_y) === -1)
       parameters.align_y = 'center'
-
-    var setFullWidth = function()
-    {
-      width  = parameters.container_width
-      height = ( parameters.container_width / parameters.content_width ) * parameters.content_height
-      x      = 0
-      fit_in = 'width'
-
-      switch(parameters.align_y)
-      {
-        case 'top':
-          y = 0;
-          break
-
-        case 'middle':
-        case 'center':
-          y = (parameters.container_height - height) / 2
-          break
-
-        case 'bottom':
-          y = parameters.container_height - height
-          break
-      }
-    }
-    var setFullHeight = function()
-    {
-      height = parameters.container_height
-      width  = (parameters.container_height / parameters.content_height) * parameters.content_width
-      y      = 0
-      fit_in = 'height'
-
-      switch(parameters.align_x)
-      {
-        case 'left':
-          x = 0;
-          break
-
-        case 'middle':
-        case 'center':
-          x = (parameters.container_width - width) / 2
-          break
-
-        case 'right':
-          x = parameters.container_width - width
-          break
-      }
-    }
-
-    // Content should fill the container
-    if(['fill', 'full', 'cover'].indexOf(parameters.fit_type)!== -1)
-    {
-      if(content_ratio < container_ratio)
-        setFullWidth()
-      else
-        setFullHeight()
-    }
-
-    // Content should fit in the container
-    else if(['fit', 'i sits', 'contain'].indexOf(parameters.fit_type)!== -1)
-    {
-      if(content_ratio < container_ratio)
-        setFullHeight()
-      else
-        setFullWidth()
-    }
 
     // Rounding
     if(['ceil', 'floor', 'round' ].indexOf(parameters.rounding)!== -1)
@@ -348,42 +281,32 @@ class Resizer {
     result.width = Math.round(source.width * scaleFactor)
     result.height = Math.round(source.height * scaleFactor)
 
-    switch (align) {
-      case this.ALIGN_LEFT:
+    switch(align.x) {
+      case 'left':
         result.x = 0;
-        result.y = (dest.height / 2) - (source.height / 2);
-        break;
-      case this.ALIGN_RIGHT:
-        result.x =  - source.width;
-        result.y = (dest.height / 2) - (source.height / 2);
-        break;
-      case this.ALIGN_TOP:
-        result.x = (dest.width / 2) - (source.width / 2);
+        break
+
+      case 'middle':
+      case 'center':
+        result.x = (dest.width - result.width) / 2
+        break
+
+      case 'right':
+        result.x = dest.width - result.width
+        break
+    }
+
+    switch(align.y) {
+      case 'top':
         result.y = 0;
-        break;
-      case this.ALIGN_BOTTOM:
-        result.x = (dest.width / 2) - (source.width / 2);
-        result.y = dest.height - source.height;
-        break;
-      case this.ALIGN_TOP_LEFT:
-        result.x = 0;
-        result.y = 0;
-        break;
-      case this.ALIGN_TOP_RIGHT:
-        result.x = dest.width - source.width;
-        result.y = 0;
-        break;
-      case this.ALIGN_BOTTOM_LEFT:
-        result.x = 0;
-        result.y = dest.height - source.height;
-        break;
-      case this.ALIGN_BOTTOM_RIGHT:
-        result.x = dest.width - source.width;
-        result.y = dest.height - source.height;
-        break;
-      default: // this.ALIGN_CENTER
-        result.x = (dest.width / 2) - (source.width / 2);
-        result.y = (dest.height / 2) - (source.height / 2);
+        break
+      case 'middle':
+      case 'center':
+        result.y = (dest.height - result.height) / 2
+        break
+      case 'bottom':
+        result.y = dest.height - result.height
+        break
     }
 
     return result

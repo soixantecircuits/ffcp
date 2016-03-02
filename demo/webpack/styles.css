@@ -29,13 +29,13 @@
 .container {
   background:#ddd;
   margin:20px;
-  width: 400px;
+  width: 500px;
   height:400px;
   overflow:hidden;
  }
  
  .container.small{
-   overflow: hidde;
+   overflow: hidden;
    width:200px;
    height: 150px;
    position: relative;
