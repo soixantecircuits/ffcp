@@ -1,74 +1,187 @@
 'use strict'
 
-const CONSTANTS = {
+const ALIGNS = {
+  LEFT: 'left',
+  RIGHT: 'right',
+  CENTER: 'center',
+  MIDDLE: 'middle',
+  TOP: 'top',
+  BOTTOM: 'bottom'
+}
+
+const FITS = {
   NONE: 'none',
   FILL: 'fill',
   BEST_FILL: 'best-fill',
   BEST_FIT: 'best-fit',
-  BEST_FIT_DOWN_ONLY: 'best-fit-down',
-  ALIGN_LEFT: 'left',
-  ALIGN_RIGHT: 'right',
-  ALIGN_CENTER: 'center',
-  ALIGN_TOP: 'top',
-  ALIGN_BOTTOM: 'bottom'
+  BEST_FIT_DOWN_ONLY: 'best-fit-down'
 }
 
+/**
+ * Resizer class for image scaling
+ * @public
+ * @class
+ * */
 class Resizer {
   constructor(options) {
+    // setting default options
     this.options = {
-      scale       : 'best-fill',
-      align       : 'center',
-      force_style : true,
-      parse       : true,
-      target      : document.body,
-      auto_resize : true,
-      rounding    : 'ceil',
-      classes     : {
-        to_resize : 'do-container',
-        content   : 'do-content'
+      scale      : FITS.BEST_FILL,
+      alignX     : ALIGNS.CENTER,
+      alignY     : ALIGNS.CENTER,
+      forceStyle : true,
+      target     : document.body,
+      autoResize : true,
+      rounding   : 'ceil',
+      selectors  : {
+        container: '.do-container',
+        content  : '.do-content'
       }
     }
     Object.assign(this.options, options)
     // Set up
     this.elements = []
 
-    // Parse
-    if(this.options.parse)
-      this.parse(this.options.target)
+    this._parse()
 
-    // Auto resize
-    if(this.options.auto_resize)
-      this.initAutoResize()
-  }
-
-  initAutoResize() {
-    //TODO: Implement auto-resize
-    let that = this
+    if (this.options.auto_resize) window.addEventListener('resize', this.resizeAll.bind(this))
 
     this.resizeAll()
+  }
+
+  /**
+   * @public
+   * Method used to resize all images in container specified in constructor
+   * @param {Object} options
+   * @return {Resizer} this for method chaining
+   * */
+  resizeAll(options) {
+    let self = this
+    ;[].forEach.call(this.elements, (element, i) => {
+      if (self.cachedElements[i]) {
+        let cache = self.cachedElements[i]
+        Object.assign(element.content, cache.content)
+        Object.assign(element.container, cache.container)
+        self.resize(element.container, element.content, options)
+      }
+    })
+    return this
+  }
+
+  /**
+   * @public
+   * Method used to resize specified content in a specified container
+   * @param {HTMLElement} container
+   * @param {HTMLElement} content
+   * @param {Object} options
+   * @return {Resizer} this for method chaining
+   * */
+  resize(container, content, options) {
+    let errors = []
+
+    if (!( container instanceof HTMLElement)) errors.push('wrong container parameter')
+    if (!(content instanceof HTMLElement)) errors.push('wrong content parameter')
+
+    if (errors.length) {
+      errors.forEach((err) => console.warn(err))
+      return false
+    }
+
+    // Parameters
+    let parameters = {}
+    options = options ? options : {}
+    parameters.containerWidth = options.containerWidth ||
+                                container.getAttribute('data-width') ||
+                                container.getAttribute('width') ||
+                                container.offsetWidth
+    parameters.containerHeight = options.containerHeight ||
+                                 container.getAttribute('data-height') ||
+                                 container.getAttribute('height') ||
+                                 container.offsetHeight
+    parameters.contentWidth = options.contentWidth ||
+                              content.getAttribute('data-width') ||
+                              content.getAttribute('width') ||
+                              content.offsetWidth
+    parameters.contentHeight = options.contentHeight ||
+                               content.getAttribute('data-height') ||
+                               content.getAttribute('height') ||
+                               content.offsetHeight
+    parameters.scale = options.scale ||
+                       content.getAttribute('data-scale')
+    parameters.rounding = options.rounding ||
+                          content.getAttribute('data-rounding')
+    parameters.align = {
+      x: options.alignX || content.getAttribute('data-align-x'),
+      y: options.alignY || content.getAttribute('data-align-y')
+    }
+
+    options.forceStyle = !!options.forceStyle
+
+    if(options.forceStyle) {
+      let containerStyle = window.getComputedStyle(container),
+        contentStyle   = window.getComputedStyle(content)
+
+      if(containerStyle.position !== 'fixed' && containerStyle.position !== 'relative'
+        && containerStyle.position !== 'absolute') {
+        container.style.position = 'relative'
+      }
+
+      if(contentStyle.position !== 'fixed' && contentStyle.position !== 'relative' && contentStyle.position !== 'absolute') {
+        content.style.position = 'absolute'
+      }
+
+      if(containerStyle.overflow !== 'hidden') container.style.overflow = 'hidden'
+    }
+
+    let dest = {}
+    dest.width = parameters.containerWidth
+    dest.height = parameters.containerHeight
+
+    let source = {}
+    source.width = parameters.contentWidth
+    source.height = parameters.contentHeight
+
+    let layout = this._innerFrameForSize(parameters.scale, parameters.align, source, dest)
+
+    if (['ceil', 'floor', 'round'].indexOf(parameters.rounding)!== -1) {
+      layout.width  = Math[parameters.rounding].call(this, layout.width)
+      layout.height = Math[parameters.rounding].call(this, layout.height)
+      layout.x      = Math[parameters.rounding].call(this, layout.x)
+      layout.y      = Math[parameters.rounding].call(this, layout.y)
+    }
+
+    content.style.position = 'relative'
+    content.style.top = layout.y + 'px'
+    content.style.left = layout.x + 'px'
+    content.style.width = layout.width + 'px'
+    content.style.height = layout.height + 'px'
+    content.style.maxWidth = 'none'
+    content.style.margin = 0
+    content.style.display = 'block'
 
     return this
   }
 
-  parse(target, selector) {
-    // Default options
+  /**
+   * @private
+   * Utility function used to find all images to scale inside container specified in constructor
+   * */
+  _parse() {
     let self = this
-    target   = target   || this.options.target
-    selector = selector || this.options.classes.to_resize
+    // Default options
+    let target = this.options.target
 
     this.elements = []
     this.cachedElements = []
-    let containers = target.querySelectorAll('.' + selector)
+    let containers = target.querySelectorAll(this.options.selectors.container)
 
-    for(let i = 0, len = containers.length; i < len; i++) {
-      let container = containers[i],
-        content   = container.querySelector('.' + this.options.classes.content)
-
+      ;[].forEach.call(containers, (container, i) => {
+      let content   = container.querySelector(self.options.selectors.content)
       if(content) {
-        this.elements.push({
-            container : container,
-            content   : content
-          })
+        self.elements.push({
+          container : container,
+          content   : content
+        })
         content.style.display = 'none'
         ;(function waitTillContentReady(container, content, index) {
           content.onload = function() {
@@ -87,126 +200,43 @@ class Resizer {
           }
         })(container, content, i)
       }
-    }
-    return this
+    })
   }
 
-  resizeAll(options) {
-    for(let i = 0, len = this.elements.length; i < len; i++) {
-      let element = this.elements[i]
-      if(this.cachedElements[i]) {
-        let cache = this.cachedElements[i]
-        Object.assign(element.content, cache.content)
-        Object.assign(element.container, cache.container)
-        this.resize(element.container, element.content, options)
-      }
-    }
-    return this
-  }
+  /**
+   * @private
+   * Utility function used to calculate layout
+   * @param {FITS} fit (one of enumeration values)
+   * @param {ALIGNS} align (one of enumeration values)
+   * @param {Object} source object with image width and height
+   * @param {Object} dest object with container width and height
+   * @return {Object} layout object with all calculated properties
+   * */
+  _innerFrameForSize(fit, align, source, dest){
 
-  resize(container, content, options) {
-    // Errors
-    let errors = []
+    let scaleX, scaleY, scaleFactor
 
-    if(!( container instanceof HTMLElement))
-      errors.push('wrong container parameter')
-
-    if(!(content instanceof HTMLElement))
-      errors.push('wrong content parameter')
-
-    if(errors.length)
-    {
-      for(let i = 0; i < errors.length; i++)
-        console.warn(errors[i])
-
-      return false
-    }
-
-    // Parameters
-    let parameters = {}
-    options = options ? options : {}
-    parameters.container_width  = options.containerWidth || container.getAttribute('data-width')  || container.getAttribute('width')  || container.offsetWidth
-    parameters.container_height = options.containerHeight || container.getAttribute('data-height') || container.getAttribute('height') || container.offsetHeight
-    parameters.content_width    = options.contentWidth || content.getAttribute('data-width')    || content.getAttribute('width')    || content.offsetWidth
-    parameters.content_height   = options.contentHeight || content.getAttribute('data-height')   || content.getAttribute('height')   || content.offsetHeight
-    parameters.scale            = options.scale || content.getAttribute('data-scale')
-    parameters.rounding         = options.rounding || content.getAttribute('data-rounding')
-    parameters.align = {
-      x: options.align_x || content.getAttribute('data-align-x'),
-      y: options.align_y || content.getAttribute('data-align-y')
-    }
-
-    options.force_style = !!options.force_style
-
-    if(options.force_style) {
-      let container_style = window.getComputedStyle(container),
-        content_style   = window.getComputedStyle(content)
-
-      if(container_style.position !== 'fixed' && container_style.position !== 'relative' && container_style.position !== 'absolute')
-        container.style.position = 'relative'
-
-      if(content_style.position !== 'fixed' && content_style.position !== 'relative' && content_style.position !== 'absolute')
-        content.style.position = 'absolute'
-
-      if(container_style.overflow !== 'hidden')
-        container.style.overflow = 'hidden'
-    }
-
-    let dest = {}
-    dest.width = parameters.container_width
-    dest.height = parameters.container_height
-
-    let source = {}
-    source.width = parameters.content_width
-    source.height = parameters.content_height
-
-    let layout = this._innerFrameForSize(parameters.scale, parameters.align, source, dest)
-
-    if(['ceil', 'floor', 'round'].indexOf(parameters.rounding)!== -1)
-    {
-      layout.width  = Math[parameters.rounding].call(this, layout.width)
-      layout.height = Math[parameters.rounding].call(this, layout.height)
-      layout.x      = Math[parameters.rounding].call(this, layout.x)
-      layout.y      = Math[parameters.rounding].call(this, layout.y)
-    }
-
-    content.style.position = 'relative'
-    content.style.top = layout.y+'px'
-    content.style.left = layout.x+'px'
-    content.style.width = layout.width+'px'
-    content.style.height = layout.height+'px'
-    content.style.maxWidth = 'none'
-    content.style.margin = 0
-    content.style.display = 'block'
-
-    return this
-  }
-
-  _innerFrameForSize(scale, align, source, dest){
-
-    let scaleX, scaleY, result, scaleFactor
-
-    result = { x: 0, y: 0, width: dest.width, height: dest.height }
-    if (scale === 'fill') return result
+    let result = { x: 0, y: 0, width: dest.width, height: dest.height }
+    if (fit === FITS.FILL) return result
 
     scaleX = dest.width / source.width
     scaleY = dest.height / source.height
 
-    switch (scale) {
-      case CONSTANTS.BEST_FIT_DOWN_ONLY:
+    switch (fit) {
+      case FITS.BEST_FIT_DOWN_ONLY:
         if ((source.width > dest.width) || (source.height > dest.height)) {
           scaleFactor = scaleX < scaleY ? scaleX : scaleY
         } else {
           scaleFactor = 1.0
         }
         break
-      case CONSTANTS.BEST_FIT:
+      case FITS.BEST_FIT:
         scaleFactor = scaleX < scaleY ? scaleX : scaleY
         break
-      case CONSTANTS.NONE:
+      case FITS.NONE:
         scaleFactor = 1.0
         break
-      case CONSTANTS.BEST_FILL:
+      case FITS.BEST_FILL:
       default:
         scaleFactor = scaleX > scaleY ? scaleX : scaleY
         break
@@ -216,35 +246,33 @@ class Resizer {
     result.height = Math.round(source.height * scaleFactor)
 
     switch(align.x) {
-      case 'left':
-        result.x = 0;
+      case ALIGNS.LEFT:
+        result.x = 0
         break
-
-      case 'middle':
-      case 'center':
-        result.x = (dest.width - result.width) / 2
-        break
-
-      case 'right':
+      case ALIGNS.RIGHT:
         result.x = dest.width - result.width
+        break
+      case ALIGNS.MIDDLE:
+      case ALIGNS.CENTER:
+        result.x = (dest.width - result.width) / 2
         break
     }
 
     switch(align.y) {
-      case 'top':
-        result.y = 0;
+      case ALIGNS.TOP:
+        result.y = 0
         break
-      case 'middle':
-      case 'center':
-        result.y = (dest.height - result.height) / 2
-        break
-      case 'bottom':
+      case ALIGNS.BOTTOM:
         result.y = dest.height - result.height
+        break
+      case ALIGNS.MIDDLE:
+      case ALIGNS.CENTER:
+        result.y = (dest.height - result.height) / 2
         break
     }
 
     return result
-
   }
 }
+
 module.exports = Resizer
