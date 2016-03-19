@@ -87,6 +87,17 @@ class Resizer {
       return false
     }
 
+    if (container.cache) Object.assign(container, container.cache)
+    else container.cache = {
+      width: container.width,
+      height: container.height
+    }
+    if (content.cache) Object.assign(content, content.cache)
+    else content.cache = {
+      width: content.width,
+      height: content.height
+    }
+
     // Parameters
     let parameters = {}
     options = options ? options : {}

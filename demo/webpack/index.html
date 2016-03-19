@@ -1,312 +1,57 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>ffcp demo - Resizer</title>
   <link rel="stylesheet" type="text/css" href="./styles.css">
+  <link rel="stylesheet" type="text/css" href="./new2.css">
 </head>
 <body>
 
 <h2>Auto trigger scale at loading</h2>
-  <div class="container do-container">
-    <img class="example do-content" data-scale="best-fit" src="test3.png">
-  </div>
-
-<div class='auto-target'>
-  <h1>Same image with different alignement</h1>
-  <div class="group-image">
-    <div class="block">
-      <h3>Align left</h3>
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="none" data-align-x="left" data-align-y="center" src="test3.png">
-      </div>
-    </div>
-    <div class="block">
-      <h3>Align right</h3>
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="none" data-align-x="right" data-align-y="center" src="test3.png">
-      </div>
-    </div>
-    <div class="block">
-      <h3>Align middle</h3>
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="none" data-align-x="center" data-align-y="center" src="test3.png">
-      </div>
-    </div>
-    <div class="block">
-      <h3>Align top</h3>
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="none" data-align-x="center" data-align-y="top" src="test3.png">
-      </div>
-    </div>
-    <div class="block">
-      <h3>Align bottom</h3>
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="none" data-align-y="bottom" data-align-x="center" src="test3.png">
-      </div>
-    </div>
-    <div class="block">
-      <h3>Align top-right</h3>
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="none" data-align-y="top" data-align-x="right" src="test3.png">
-      </div>
-    </div>
-    <div class="block">
-      <h3>Align bottom-left</h3>
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="none" data-align-y="bottom" data-align-x="left" src="test3.png">
-      </div>
-    </div>
-    <h3>Scale "none"</h3>
-</div>
-
-<div class='auto-target'>
-  <div class="group-image">
-    <div class="block">
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="fill" data-align-x="left" data-align-y="center" src="test3.png">
-      </div>
-    </div>
-    <div class="block">
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="fill" data-align-x="right" data-align-y="center" src="test3.png">
-      </div>
-    </div>
-    <div class="block">
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="fill" data-align-x="center" data-align-y="center" src="test3.png">
-      </div>
-    </div>
-    <div class="block">
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="fill" data-align-x="center" data-align-y="top" src="test3.png">
-      </div>
-    </div>
-    <div class="block">
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="fill" data-align-y="bottom" data-align-x="center" src="test3.png">
-      </div>
-    </div>
-    <div class="block">
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="fill" data-align-y="top" data-align-x="right" src="test3.png">
-      </div>
-    </div>
-    <div class="block">
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="fill" data-align-y="bottom" data-align-x="left" src="test3.png">
-      </div>
-    </div>
-  </div>
-  <h3>Scale "fill"</h3>
-</div>
-
-<div class='auto-target'>
-  <div class="group-image">
-    <div class="block">
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="best-fill" data-align-x="left" data-align-y="center" src="test3.png">
-      </div>
-    </div>
-    <div class="block">
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="best-fill" data-align-x="right" data-align-y="center" src="test3.png">
-      </div>
-    </div>
-    <div class="block">
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="best-fill" data-align-x="center" data-align-y="center" src="test3.png">
-      </div>
-    </div>
-    <div class="block">
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="best-fill" data-align-x="center" data-align-y="top" src="test3.png">
-      </div>
-    </div>
-    <div class="block">
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="best-fill" data-align-y="bottom" data-align-x="center" src="test3.png">
-      </div>
-    </div>
-    <div class="block">
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="best-fill" data-align-y="top" data-align-x="right" src="test3.png">
-      </div>
-    </div>
-    <div class="block">
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="best-fill" data-align-y="bottom" data-align-x="left" src="test3.png">
-      </div>
-    </div>
-  </div>
-  <h3>Scale "best fill"</h3>
-</div>
-
-<div class='auto-target'>
-  <div class="group-image">
-    <div class="block">
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="best-fit" data-align-x="left" data-align-y="center" src="test3.png">
-      </div>
-    </div>
-    <div class="block">
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="best-fit" data-align-x="right" data-align-y="center" src="test3.png">
-      </div>
-    </div>
-    <div class="block">
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="best-fit" data-align-x="center" data-align-y="center" src="test3.png">
-      </div>
-    </div>
-    <div class="block">
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="best-fit" data-align-x="center" data-align-y="top" src="test3.png">
-      </div>
-    </div>
-    <div class="block">
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="best-fit" data-align-y="bottom" data-align-x="center" src="test3.png">
-      </div>
-    </div>
-    <div class="block">
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="best-fit" data-align-y="top" data-align-x="right" src="test3.png">
-      </div>
-    </div>
-    <div class="block">
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="best-fit" data-align-y="bottom" data-align-x="left" src="test3.png">
-      </div>
-    </div>
-  </div>
-  <h3>Scale "best fit"</h3>
-</div>
-
-<div class='auto-target'>
-  <div class="group-image">
-    <div class="block">
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="best-fit-down" data-align-x="left" data-align-y="center" src="test3.png">
-      </div>
-    </div>
-    <div class="block">
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="best-fit-down" data-align-x="right" data-align-y="center" src="test3.png">
-      </div>
-    </div>
-    <div class="block">
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="best-fit-down" data-align-x="center" data-align-y="center" src="test3.png">
-      </div>
-    </div>
-    <div class="block">
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="best-fit-down" data-align-x="center" data-align-y="top" src="test3.png">
-      </div>
-    </div>
-    <div class="block">
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="best-fit-down" data-align-y="bottom" data-align-x="center" src="test3.png">
-      </div>
-    </div>
-    <div class="block">
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="best-fit-down" data-align-y="top" data-align-x="right" src="test3.png">
-      </div>
-    </div>
-    <div class="block">
-      <div class="container do-container small">
-        <img class="example do-content" data-scale="best-fit-down" data-align-y="bottom" data-align-x="left" src="test3.png">
-      </div>
-    </div>
-  </div>
-  <h3>Scale "best fit down"</h3>
+<div class="container do-container">
+  <img class="example do-content" data-scale="best-fit" src="test3.png">
 </div>
 <br>
+<div class="control-panel" style="height: 510px; width:210px">
+
+  <div style="height: 60px; width:190px">Scale</div>
+
+  <button style="height: 50px; width:190px" onclick="resizeImage({scale: 'fill'})">Fill</button>
+  <button style="height: 50px; width:190px" onclick="resizeImage({scale: 'best-fill'})">Best fill</button>
+  <button style="height: 50px; width:190px" onclick="resizeImage({scale: 'best-fit'})">Best fit</button>
+  <button style="height: 50px; width:190px" onclick="resizeImage({scale: 'best-fit-down'})">Best fit down</button>
+
+  <div style="height: 60px; width:190px">Align</div>
+
+  <button style="height: 60px; width:60px" onclick="resizeImage({alignX: 'left', alignY: 'top'})">&#8598;</button>
+  <button style="height: 60px; width:60px" onclick="resizeImage({alignX: 'center', alignY: 'top'})">&uarr;</button>
+  <button style="height: 60px; width:60px" onclick="resizeImage({alignX: 'right', alignY: 'top'})">&#8599;</button>
+
+  <button style="height: 60px; width:60px" onclick="resizeImage({alignX: 'left', alignY: 'center'})">&larr;</button>
+  <button style="height: 60px; width:60px" onclick="resizeImage({alignX: 'center', alignY: 'center'})">o</button>
+  <button style="height: 60px; width:60px" onclick="resizeImage({alignX: 'right', alignY: 'center'})">&rarr;</button>
+
+  <button style="height: 60px; width:60px" onclick="resizeImage({alignX: 'left', alignY: 'bottom'})">&#8601;</button>
+  <button style="height: 60px; width:60px" onclick="resizeImage({alignX: 'center', alignY: 'bottom'})">&darr;</button>
+  <button style="height: 60px; width:60px" onclick="resizeImage({alignX: 'right', alignY: 'bottom'})">&#8600;</button>
+
+</div>
+
+<button onclick="landscape()">Landscape</button>
+<button onclick="portrait()">Portrait</button>
+<button onclick="square()">Square</button>
+
 <div class='manual-target'>
- <h1>Trigerring scale function manually</h1>
+  <h1>Trigerring scale function manually</h1>
   <div class="wrap">
-    <div class="action">
-      <input class="sqr" type="button" value="fill"/>
-    </div>
-    <div class="action">
-      <input class="sqr" type="button" value="best-fill"/>
-    </div>
-    <div class="action">
-      <input class="sqr" type="button" value="best-fit"/>
-    </div>
-    <div class="action">
-      <input class="sqr" type="button" value="best-fit-down"/>
-
-    </div>
-    <div class="group-image" id="square">
-      <div class="block landscape container do-container">
-        <img class="example do-content" src="test1.jpg">
-      </div>
-      <div class="block portrait container do-container">
-        <img class="example do-content" src="test1.jpg">
-      </div>
-      <div class="block square container do-container">
-        <img class="example do-content" src="test1.jpg">
-      </div>
+  </div>
+  <div class="group-image" id="square">
+    <div class="block landscape container do-container" id="demo-container">
+      <img class="example do-content" src="test3.png" id="demo-content">
     </div>
   </div>
-
-  <div class="wrap">
-    <div class="action">
-      <input class="prtrt" type="button" value="fill"/>
-    </div>
-    <div class="action">
-      <input class="prtrt" type="button" value="best-fill"/>
-    </div>
-    <div class="action">
-      <input class="prtrt" type="button" value="best-fit"/>
-    </div>
-    <div class="action">
-      <input class="prtrt" type="button" value="best-fit-down"/>
-
-    </div>
-    <div class="group-image" id="portrait">
-      <div class="block landscape container do-container">
-        <img class="example do-content" src="test2.jpg">
-      </div>
-      <div class="block portrait container do-container">
-        <img class="example do-content" src="test2.jpg">
-      </div>
-      <div class="block square container do-container">
-        <img class="example do-content" src="test2.jpg">
-      </div>
-    </div>
-  </div>
-
-  <div class="wrap">
-    <div class="action">
-      <input class="lndscp" type="button" value="fill"/>
-    </div>
-    <div class="action">
-      <input class="lndscp" type="button" value="best-fill"/>
-    </div>
-    <div class="action">
-      <input class="lndscp" type="button" value="best-fit"/>
-    </div>
-    <div class="action">
-      <input class="lndscp" type="button" value="best-fit-down"/>
-
-    </div>
-    <div class="group-image" id="landscape">
-      <div class="block landscape container do-container">
-        <img class="example do-content" src="test3.png">
-      </div>
-      <div class="block portrait container do-container">
-        <img class="example do-content" src="test3.png">
-      </div>
-      <div class="block square container do-container">
-        <img class="example do-content" src="test3.png">
-      </div>
-    </div>
-  </div>
+</div>
 
 </div>
 

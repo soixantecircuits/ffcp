@@ -1,27 +1,30 @@
 let Resizer = require('../../../src/ffcp.js')
 
-let initResize = new Resizer()
+let resizer = new Resizer()
 
-let square = new Resizer({target: document.getElementById('square')})
+let container = document.querySelector('#demo-container')
+  , image = document.querySelector('#demo-content')
 
-let landscape = new Resizer({target: document.getElementById('landscape')})
-
-let portrait = new Resizer({target: document.getElementById('portrait')})
-
-function createHandler(resizer) {
-  return function (e) {
-    resizer.resizeAll({scale: e.srcElement.value})
-  }
+let currentConfig = {
+  alignX: 'center',
+  alignY: 'center',
+  scale: 'best-fill'
 }
-let squareButtons = document.querySelectorAll('input.sqr ')
-Array.prototype.forEach.call(squareButtons, (button) => {
-  button.onclick = createHandler(square)
-})
-let landscapeButtons = document.querySelectorAll('input.lndscp')
-Array.prototype.forEach.call(landscapeButtons, (button) => {
-  button.onclick = createHandler(landscape)
-})
-let portraitButtons = document.querySelectorAll('input.prtrt')
-Array.prototype.forEach.call(portraitButtons, (button) => {
-  button.onclick = createHandler(portrait)
-})
+
+window.resizeImage = function (options) {
+  Object.assign(currentConfig, options)
+  console.log(currentConfig)
+  resizer.resize(container, image, currentConfig)
+}
+
+window.landscape = function () {
+  image.src = 'test3.png'
+}
+
+window.portrait = function () {
+  image.src = 'test2.jpg'
+}
+
+window.square = function () {
+  image.src = 'test1.jpg'
+}

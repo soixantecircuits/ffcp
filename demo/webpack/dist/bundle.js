@@ -56,31 +56,34 @@
 
 	var Resizer = __webpack_require__(2);
 
-	var initResize = new Resizer();
+	var resizer = new Resizer();
 
-	var square = new Resizer({ target: document.getElementById('square') });
+	var container = document.querySelector('#demo-container'),
+	    image = document.querySelector('#demo-content');
 
-	var landscape = new Resizer({ target: document.getElementById('landscape') });
+	var currentConfig = {
+	  alignX: 'center',
+	  alignY: 'center',
+	  scale: 'best-fill'
+	};
 
-	var portrait = new Resizer({ target: document.getElementById('portrait') });
+	window.resizeImage = function (options) {
+	  Object.assign(currentConfig, options);
+	  console.log(currentConfig);
+	  resizer.resize(container, image, currentConfig);
+	};
 
-	function createHandler(resizer) {
-	  return function (e) {
-	    resizer.resizeAll({ scale: e.srcElement.value });
-	  };
-	}
-	var squareButtons = document.querySelectorAll('input.sqr ');
-	Array.prototype.forEach.call(squareButtons, function (button) {
-	  button.onclick = createHandler(square);
-	});
-	var landscapeButtons = document.querySelectorAll('input.lndscp');
-	Array.prototype.forEach.call(landscapeButtons, function (button) {
-	  button.onclick = createHandler(landscape);
-	});
-	var portraitButtons = document.querySelectorAll('input.prtrt');
-	Array.prototype.forEach.call(portraitButtons, function (button) {
-	  button.onclick = createHandler(portrait);
-	});
+	window.landscape = function () {
+	  image.src = 'test3.png';
+	};
+
+	window.portrait = function () {
+	  image.src = 'test2.jpg';
+	};
+
+	window.square = function () {
+	  image.src = 'test1.jpg';
+	};
 
 /***/ },
 /* 2 */
@@ -139,7 +142,7 @@
 
 	    this._parse();
 
-	    if (this.options.auto_resize) window.addEventListener("resize", this.resizeAll.bind(this));
+	    if (this.options.auto_resize) window.addEventListener('resize', this.resizeAll.bind(this));
 
 	    this.resizeAll();
 	  }
@@ -189,6 +192,15 @@
 	        });
 	        return false;
 	      }
+
+	      if (container.cache) Object.assign(container, container.cache);else container.cache = {
+	        width: container.width,
+	        height: container.height
+	      };
+	      if (content.cache) Object.assign(content, content.cache);else content.cache = {
+	        width: content.width,
+	        height: content.height
+	      };
 
 	      // Parameters
 	      var parameters = {};
