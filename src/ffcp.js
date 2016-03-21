@@ -46,7 +46,6 @@ class Resizer {
 
     if (this.options.auto_resize) window.addEventListener('resize', this.resizeAll.bind(this))
 
-    this.resizeAll()
   }
 
   /**
@@ -77,6 +76,7 @@ class Resizer {
    * @return {Resizer} this for method chaining
    * */
   resize(container, content, options) {
+    let self = this
     let errors = []
 
     if (!( container instanceof HTMLElement)) errors.push('wrong container parameter')
@@ -87,18 +87,24 @@ class Resizer {
       return false
     }
 
-    if (container.cache) Object.assign(container, container.cache)
-    else container.cache = {
-      width: container.width,
-      height: container.height
-    }
-    if (content.cache) Object.assign(content, content.cache)
-    else content.cache = {
+    if (content.cache) {
+      if (content.cache.src === content.src) {
+        Object.assign(content, content.cache)
+      } else {
+        let tmpImage = document.createElement('img')
+        tmpImage.onload = () => {
+          content.cache.src = tmpImage.src
+          content.cache.width = tmpImage.width
+          content.cache.height = tmpImage.height
+          self.resize(container, content, options) // resize again after new image is loaded. May be not the best solution
+        }
+        tmpImage.src = content.src
+      }
+    } else content.cache = {
       width: content.width,
       height: content.height
     }
 
-    // Parameters
     let parameters = {}
     options = options ? options : {}
     parameters.containerWidth = options.containerWidth ||
@@ -126,9 +132,7 @@ class Resizer {
       y: options.alignY || content.getAttribute('data-align-y')
     }
 
-    options.forceStyle = !!options.forceStyle
-
-    if(options.forceStyle) {
+    if (!!options.forceStyle) {
       let containerStyle = window.getComputedStyle(container),
         contentStyle   = window.getComputedStyle(content)
 
@@ -197,6 +201,7 @@ class Resizer {
         ;(function waitTillContentReady(container, content, index) {
           content.onload = function() {
             content.style.display = 'block'
+            container.cache
             self.cachedElements[index] = {
               container: {
                 width: container.width,
@@ -208,6 +213,7 @@ class Resizer {
               }
             }
             self.resize(container, content)
+            content.onload = null
           }
         })(container, content, i)
       }

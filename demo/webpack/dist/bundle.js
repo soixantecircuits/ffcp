@@ -64,25 +64,28 @@
 	var currentConfig = {
 	  alignX: 'center',
 	  alignY: 'center',
-	  scale: 'best-fill'
+	  scale: 'best-fill',
+	  forceStyle: true
 	};
 
 	window.resizeImage = function (options) {
 	  Object.assign(currentConfig, options);
-	  console.log(currentConfig);
 	  resizer.resize(container, image, currentConfig);
 	};
 
 	window.landscape = function () {
 	  image.src = 'test3.png';
+	  resizeImage(currentConfig);
 	};
 
 	window.portrait = function () {
 	  image.src = 'test2.jpg';
+	  resizeImage(currentConfig);
 	};
 
 	window.square = function () {
 	  image.src = 'test1.jpg';
+	  resizeImage(currentConfig);
 	};
 
 /***/ },
@@ -144,7 +147,7 @@
 
 	    if (this.options.auto_resize) window.addEventListener('resize', this.resizeAll.bind(this));
 
-	    this.resizeAll();
+	    //this.resizeAll()
 	  }
 
 	  /**
@@ -181,6 +184,7 @@
 	  }, {
 	    key: 'resize',
 	    value: function resize(container, content, options) {
+	      var self = this;
 	      var errors = [];
 
 	      if (!(container instanceof HTMLElement)) errors.push('wrong container parameter');
@@ -193,16 +197,26 @@
 	        return false;
 	      }
 
-	      if (container.cache) Object.assign(container, container.cache);else container.cache = {
-	        width: container.width,
-	        height: container.height
-	      };
-	      if (content.cache) Object.assign(content, content.cache);else content.cache = {
+	      if (content.cache) {
+	        if (content.cache.src === content.src) {
+	          Object.assign(content, content.cache);
+	        } else {
+	          (function () {
+	            var tmpImage = document.createElement('img');
+	            tmpImage.onload = function () {
+	              content.cache.src = tmpImage.src;
+	              content.cache.width = tmpImage.width;
+	              content.cache.height = tmpImage.height;
+	              self.resize(container, content, options);
+	            };
+	            tmpImage.src = content.src;
+	          })();
+	        }
+	      } else content.cache = {
 	        width: content.width,
 	        height: content.height
 	      };
 
-	      // Parameters
 	      var parameters = {};
 	      options = options ? options : {};
 	      parameters.containerWidth = options.containerWidth || container.getAttribute('data-width') || container.getAttribute('width') || container.offsetWidth;
@@ -216,9 +230,7 @@
 	        y: options.alignY || content.getAttribute('data-align-y')
 	      };
 
-	      options.forceStyle = !!options.forceStyle;
-
-	      if (options.forceStyle) {
+	      if (!!options.forceStyle) {
 	        var containerStyle = window.getComputedStyle(container),
 	            contentStyle = window.getComputedStyle(content);
 
@@ -286,6 +298,7 @@
 	          content.style.display = 'none';(function waitTillContentReady(container, content, index) {
 	            content.onload = function () {
 	              content.style.display = 'block';
+	              container.cache;
 	              self.cachedElements[index] = {
 	                container: {
 	                  width: container.width,
@@ -297,6 +310,7 @@
 	                }
 	              };
 	              self.resize(container, content);
+	              content.onload = null;
 	            };
 	          })(container, content, i);
 	        }

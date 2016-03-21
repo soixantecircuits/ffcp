@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>ffcp demo - Resizer</title>
   <link rel="stylesheet" type="text/css" href="./styles.css">
-  <link rel="stylesheet" type="text/css" href="./new2.css">
 </head>
 <body>
 
@@ -13,7 +12,7 @@
   <img class="example do-content" data-scale="best-fit" src="test3.png">
 </div>
 <br>
-<div class="control-panel" style="height: 510px; width:210px">
+<div class="control-panel" style="height: 510px; width:210px; display: inline-block;" >
 
   <div style="height: 60px; width:190px">Scale</div>
 
@@ -37,18 +36,19 @@
   <button style="height: 60px; width:60px" onclick="resizeImage({alignX: 'right', alignY: 'bottom'})">&#8600;</button>
 
 </div>
+<div style="display: inline-block; margin: 20px;">
+  <button onclick="landscape()" style="display: block;">Landscape</button>
+  <button onclick="portrait()"  style="display: block;">Portrait</button>
+  <button onclick="square()"    style="display: block;">Square</button>
+</div>
 
-<button onclick="landscape()">Landscape</button>
-<button onclick="portrait()">Portrait</button>
-<button onclick="square()">Square</button>
-
-<div class='manual-target'>
+<div class='manual-target' style="display: inline-block;">
   <h1>Trigerring scale function manually</h1>
   <div class="wrap">
   </div>
   <div class="group-image" id="square">
     <div class="block landscape container do-container" id="demo-container">
-      <img class="example do-content" src="test3.png" id="demo-content">
+      <img class="example do-content" src="test2.jpg" id="demo-content">
     </div>
   </div>
 </div>

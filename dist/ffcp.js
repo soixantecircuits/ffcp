@@ -158,6 +158,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return false;
 	      }
 	
+	      if (container.cache) Object.assign(container, container.cache);else container.cache = {
+	        width: container.width,
+	        height: container.height
+	      };
+	      if (content.cache) {
+	        if (content.cache.src === content.src) {
+	          Object.assign(content, content.cache);
+	        } else {
+	          (function () {
+	            var tmpImage = document.createElement('img');
+	            tmpImage.onload = function () {
+	              content.cache.src = tmpImage.src;
+	              content.cache.width = tmpImage.width;
+	              content.cache.height = tmpImage.height;
+	            };
+	            tmpImage.src = content.src;
+	          })();
+	        }
+	      } else content.cache = {
+	        width: content.width,
+	        height: content.height
+	      };
+	
 	      // Parameters
 	      var parameters = {};
 	      options = options ? options : {};
@@ -172,9 +195,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        y: options.alignY || content.getAttribute('data-align-y')
 	      };
 	
-	      options.forceStyle = !!options.forceStyle;
-	
-	      if (options.forceStyle) {
+	      if (!!options.forceStyle) {
 	        var containerStyle = window.getComputedStyle(container),
 	            contentStyle = window.getComputedStyle(content);
 	
