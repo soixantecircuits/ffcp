@@ -56,8 +56,6 @@
 
 	var Resizer = __webpack_require__(2);
 
-	var resizer = new Resizer();
-
 	var container = document.querySelector('#demo-container'),
 	    image = document.querySelector('#demo-content');
 
@@ -68,9 +66,11 @@
 	  forceStyle: true
 	};
 
+	Resizer.resizeAll(document.body);
+
 	window.resizeImage = function (options) {
 	  Object.assign(currentConfig, options);
-	  resizer.resize(container, image, currentConfig);
+	  Resizer.resize(container, image, currentConfig);
 	};
 
 	window.landscape = function () {
@@ -94,310 +94,258 @@
 
 	'use strict';
 
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	module.exports = function () {
+	  'use strict';
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	  var Resizer = {};
 
-	var ALIGNS = {
-	  LEFT: 'left',
-	  RIGHT: 'right',
-	  CENTER: 'center',
-	  MIDDLE: 'middle',
-	  TOP: 'top',
-	  BOTTOM: 'bottom'
-	};
+	  var ALIGNS = {
+	    LEFT: 'left',
+	    RIGHT: 'right',
+	    CENTER: 'center',
+	    MIDDLE: 'middle',
+	    TOP: 'top',
+	    BOTTOM: 'bottom'
+	  };
 
-	var FITS = {
-	  NONE: 'none',
-	  FILL: 'fill',
-	  BEST_FILL: 'best-fill',
-	  BEST_FIT: 'best-fit',
-	  BEST_FIT_DOWN_ONLY: 'best-fit-down'
-	};
+	  var FITS = {
+	    NONE: 'none',
+	    FILL: 'fill',
+	    BEST_FILL: 'best-fill',
+	    BEST_FIT: 'best-fit',
+	    BEST_FIT_DOWN_ONLY: 'best-fit-down'
+	  };
 
-	/**
-	 * Resizer class for image scaling
-	 * @public
-	 * @class
-	 * */
-
-	var Resizer = function () {
-	  function Resizer(options) {
-	    _classCallCheck(this, Resizer);
-
-	    // setting default options
-	    this.options = {
-	      scale: FITS.BEST_FILL,
-	      alignX: ALIGNS.CENTER,
-	      alignY: ALIGNS.CENTER,
-	      forceStyle: true,
-	      target: document.body,
-	      autoResize: true,
-	      rounding: 'ceil',
-	      selectors: {
-	        container: '.do-container',
-	        content: '.do-content'
-	      }
-	    };
-	    Object.assign(this.options, options);
-	    // Set up
-	    this.elements = [];
-
-	    this._parse();
-
-	    if (this.options.auto_resize) window.addEventListener('resize', this.resizeAll.bind(this));
-
-	    //this.resizeAll()
-	  }
-
-	  /**
-	   * @public
-	   * Method used to resize all images in container specified in constructor
-	   * @param {Object} options
-	   * @return {Resizer} this for method chaining
-	   * */
-
-
-	  _createClass(Resizer, [{
-	    key: 'resizeAll',
-	    value: function resizeAll(options) {
-	      var self = this;[].forEach.call(this.elements, function (element, i) {
-	        if (self.cachedElements[i]) {
-	          var cache = self.cachedElements[i];
-	          Object.assign(element.content, cache.content);
-	          Object.assign(element.container, cache.container);
-	          self.resize(element.container, element.content, options);
-	        }
-	      });
-	      return this;
+	  var DEFAULT_OPTIONS = {
+	    scale: FITS.BEST_FILL,
+	    alignX: ALIGNS.CENTER,
+	    alignY: ALIGNS.CENTER,
+	    forceStyle: true,
+	    //target     : document.body,
+	    autoResize: true,
+	    rounding: 'ceil',
+	    selectors: {
+	      container: '.ffcp-container',
+	      image: '.ffcp-image'
 	    }
+	  };
 
-	    /**
-	     * @public
-	     * Method used to resize specified content in a specified container
-	     * @param {HTMLElement} container
-	     * @param {HTMLElement} content
-	     * @param {Object} options
-	     * @return {Resizer} this for method chaining
-	     * */
+	  Resizer.resize = function (container, image, options) {
+	    var errors = [];
 
-	  }, {
-	    key: 'resize',
-	    value: function resize(container, content, options) {
-	      var self = this;
-	      var errors = [];
-
-	      if (!(container instanceof HTMLElement)) errors.push('wrong container parameter');
-	      if (!(content instanceof HTMLElement)) errors.push('wrong content parameter');
-
-	      if (errors.length) {
-	        errors.forEach(function (err) {
-	          return console.warn(err);
-	        });
-	        return false;
-	      }
-
-	      if (content.cache) {
-	        if (content.cache.src === content.src) {
-	          Object.assign(content, content.cache);
+	    if (!(container instanceof HTMLElement)) errors.push('wrong container parameter');
+	    if (!(image instanceof HTMLElement)) errors.push('wrong image parameter');
+	    if (errors.length) {
+	      errors.forEach(function (err) {
+	        return console.warn(err);
+	      });
+	      return;
+	    }
+	    _waitTillContentReady(image).then(function () {
+	      if (image.cache) {
+	        if (image.cache.src === image.src) {
+	          Object.assign(image, image.cache);
 	        } else {
-	          (function () {
-	            var tmpImage = document.createElement('img');
-	            tmpImage.onload = function () {
-	              content.cache.src = tmpImage.src;
-	              content.cache.width = tmpImage.width;
-	              content.cache.height = tmpImage.height;
-	              self.resize(container, content, options);
-	            };
-	            tmpImage.src = content.src;
-	          })();
+	          _srcChanged(image, container, options);
+	          return;
 	        }
-	      } else content.cache = {
-	        width: content.width,
-	        height: content.height
+	      } else image.cache = {
+	        width: image.width,
+	        height: image.height,
+	        src: image.src
 	      };
+	      var parameters = _getImageParameters(image, container, options || {});
 
-	      var parameters = {};
-	      options = options ? options : {};
-	      parameters.containerWidth = options.containerWidth || container.getAttribute('data-width') || container.getAttribute('width') || container.offsetWidth;
-	      parameters.containerHeight = options.containerHeight || container.getAttribute('data-height') || container.getAttribute('height') || container.offsetHeight;
-	      parameters.contentWidth = options.contentWidth || content.getAttribute('data-width') || content.getAttribute('width') || content.offsetWidth;
-	      parameters.contentHeight = options.contentHeight || content.getAttribute('data-height') || content.getAttribute('height') || content.offsetHeight;
-	      parameters.scale = options.scale || content.getAttribute('data-scale');
-	      parameters.rounding = options.rounding || content.getAttribute('data-rounding');
-	      parameters.align = {
-	        x: options.alignX || content.getAttribute('data-align-x'),
-	        y: options.alignY || content.getAttribute('data-align-y')
-	      };
-
-	      if (!!options.forceStyle) {
-	        var containerStyle = window.getComputedStyle(container),
-	            contentStyle = window.getComputedStyle(content);
-
-	        if (containerStyle.position !== 'fixed' && containerStyle.position !== 'relative' && containerStyle.position !== 'absolute') {
-	          container.style.position = 'relative';
-	        }
-
-	        if (contentStyle.position !== 'fixed' && contentStyle.position !== 'relative' && contentStyle.position !== 'absolute') {
-	          content.style.position = 'absolute';
-	        }
-
-	        if (containerStyle.overflow !== 'hidden') container.style.overflow = 'hidden';
-	      }
-
+	      if (!!options.forceStyle) _forceStyle(image, container);
 	      var dest = {};
 	      dest.width = parameters.containerWidth;
 	      dest.height = parameters.containerHeight;
-
 	      var source = {};
-	      source.width = parameters.contentWidth;
-	      source.height = parameters.contentHeight;
+	      source.width = parameters.imageWidth;
+	      source.height = parameters.imageHeight;
 
-	      var layout = this._innerFrameForSize(parameters.scale, parameters.align, source, dest);
+	      var layout = _calculateLayout(parameters.scale, parameters.align, source, dest);
 
 	      if (['ceil', 'floor', 'round'].indexOf(parameters.rounding) !== -1) {
-	        layout.width = Math[parameters.rounding].call(this, layout.width);
-	        layout.height = Math[parameters.rounding].call(this, layout.height);
-	        layout.x = Math[parameters.rounding].call(this, layout.x);
-	        layout.y = Math[parameters.rounding].call(this, layout.y);
+	        _roundLayoutDimensions(layout, parameters.rounding);
 	      }
+	      _applyLayout(image.style, layout);
+	      _show(image);
+	    });
+	  };
 
-	      content.style.position = 'relative';
-	      content.style.top = layout.y + 'px';
-	      content.style.left = layout.x + 'px';
-	      content.style.width = layout.width + 'px';
-	      content.style.height = layout.height + 'px';
-	      content.style.maxWidth = 'none';
-	      content.style.margin = 0;
-	      content.style.display = 'block';
-
-	      return this;
+	  Resizer.resizeAll = function (target, options) {
+	    if (!(target instanceof HTMLElement)) {
+	      console.warn('wrong target parameter');
+	      return;
 	    }
 
-	    /**
-	     * @private
-	     * Utility function used to find all images to scale inside container specified in constructor
-	     * */
+	    var opts = Object.assign({}, DEFAULT_OPTIONS, options),
+	        pairs = _parse(target, opts.selectors.container, opts.selectors.image);
+	    pairs.forEach(function (pair) {
+	      return Resizer.resize(pair.container, pair.image, opts);
+	    });
+	  };
 
-	  }, {
-	    key: '_parse',
-	    value: function _parse() {
-	      var self = this;
-	      // Default options
-	      var target = this.options.target;
+	  function _forceStyle(image, container) {
+	    var containerStyle = window.getComputedStyle(container),
+	        imageStyle = window.getComputedStyle(image);
 
-	      this.elements = [];
-	      this.cachedElements = [];
-	      var containers = target.querySelectorAll(this.options.selectors.container);[].forEach.call(containers, function (container, i) {
-	        var content = container.querySelector(self.options.selectors.content);
-	        if (content) {
-	          self.elements.push({
-	            container: container,
-	            content: content
-	          });
-	          content.style.display = 'none';(function waitTillContentReady(container, content, index) {
-	            content.onload = function () {
-	              content.style.display = 'block';
-	              container.cache;
-	              self.cachedElements[index] = {
-	                container: {
-	                  width: container.width,
-	                  height: container.height
-	                },
-	                content: {
-	                  width: content.width,
-	                  height: content.height
-	                }
-	              };
-	              self.resize(container, content);
-	              content.onload = null;
-	            };
-	          })(container, content, i);
-	        }
-	      });
+	    if (containerStyle.position !== 'fixed' && containerStyle.position !== 'relative' && containerStyle.position !== 'absolute') {
+	      container.style.position = 'relative';
 	    }
+	    if (imageStyle.position !== 'fixed' && imageStyle.position !== 'relative' && imageStyle.position !== 'absolute') {
+	      image.style.position = 'absolute';
+	    }
+	    if (containerStyle.overflow !== 'hidden') container.style.overflow = 'hidden';
+	  }
 
-	    /**
-	     * @private
-	     * Utility function used to calculate layout
-	     * @param {FITS} fit (one of enumeration values)
-	     * @param {ALIGNS} align (one of enumeration values)
-	     * @param {Object} source object with image width and height
-	     * @param {Object} dest object with container width and height
-	     * @return {Object} layout object with all calculated properties
-	     * */
+	  function _getImageParameters(image, container, options) {
+	    var params = {};
+	    params.containerWidth = options.containerWidth || container.dataset.width || container.getAttribute('width') || container.offsetWidth;
+	    params.containerHeight = options.containerHeight || container.dataset.heigh || container.getAttribute('height') || container.offsetHeight;
+	    params.imageWidth = options.imageWidth || image.dataset.width || image.getAttribute('width') || image.offsetWidth;
+	    params.imageHeight = options.imageHeight || image.dataset.height || image.getAttribute('height') || image.offsetHeight;
+	    params.scale = options.scale || image.dataset.scale;
+	    params.rounding = options.rounding || image.dataset.rounding;
+	    params.align = {
+	      x: options.alignX || image.dataset['align-x'],
+	      y: options.alignY || image.dataset['align-y']
+	    };
+	    return params;
+	  }
 
-	  }, {
-	    key: '_innerFrameForSize',
-	    value: function _innerFrameForSize(fit, align, source, dest) {
+	  function _applyLayout(targetImageStyle, layout) {
+	    targetImageStyle.position = 'relative';
+	    targetImageStyle.top = layout.y + 'px';
+	    targetImageStyle.left = layout.x + 'px';
+	    targetImageStyle.width = layout.width + 'px';
+	    targetImageStyle.height = layout.height + 'px';
+	    targetImageStyle.maxWidth = 'none';
+	    targetImageStyle.margin = 0;
+	  }
 
-	      var scaleX = undefined,
-	          scaleY = undefined,
-	          scaleFactor = undefined;
+	  function _roundLayoutDimensions(layout, rounding) {
+	    layout.width = Math[rounding](layout.width);
+	    layout.height = Math[rounding](layout.height);
+	    layout.x = Math[rounding](layout.x);
+	    layout.y = Math[rounding](layout.y);
+	  }
 
-	      var result = { x: 0, y: 0, width: dest.width, height: dest.height };
-	      if (fit === FITS.FILL) return result;
+	  function _parse(target, containerSelector, imageSelector) {
+	    var containers = target.querySelectorAll(containerSelector),
+	        pairs = [];[].forEach.call(containers, function (container, i) {
+	      var image = container.querySelector(imageSelector);
+	      if (image) {
+	        pairs.push({ container: container, image: image });
+	      } else {
+	        console.warn('Failed to find an image in your container.');
+	      }
+	    });
 
-	      scaleX = dest.width / source.width;
-	      scaleY = dest.height / source.height;
+	    return pairs;
+	  }
 
-	      switch (fit) {
-	        case FITS.BEST_FIT_DOWN_ONLY:
-	          if (source.width > dest.width || source.height > dest.height) {
-	            scaleFactor = scaleX < scaleY ? scaleX : scaleY;
-	          } else {
-	            scaleFactor = 1.0;
-	          }
-	          break;
-	        case FITS.BEST_FIT:
+	  function _waitTillContentReady(image) {
+	    return new Promise(function (resolve) {
+	      image.onload = function () {
+	        resolve();
+	        _show(image);
+	        image.onload = null;
+	      };
+	      image.src = image.src;
+	    });
+	  }
+
+	  function _srcChanged(image, container, options) {
+	    var tmpImage = document.createElement('img'); // in-memory image for getting real image size
+	    tmpImage.onload = function () {
+	      image.cache.src = tmpImage.src;
+	      image.cache.width = tmpImage.width;
+	      image.cache.height = tmpImage.height;
+	      Resizer.resize(container, image, options); // resize again after new image is loaded. May be not the best solution
+	      _show(image);
+	    };
+	    tmpImage.src = image.src;
+	    _hide(image);
+	  }
+
+	  function _hide(element) {
+	    element.style.display = 'none';
+	  }
+
+	  function _show(element) {
+	    element.style.display = 'block';
+	  }
+
+	  function _calculateLayout(fit, align, source, dest) {
+	    var scaleX = undefined,
+	        scaleY = undefined,
+	        scaleFactor = undefined;
+
+	    var result = { x: 0, y: 0, width: dest.width, height: dest.height };
+	    if (fit === FITS.FILL) return result;
+
+	    scaleX = dest.width / source.width;
+	    scaleY = dest.height / source.height;
+
+	    switch (fit) {
+	      case FITS.BEST_FIT_DOWN_ONLY:
+	        if (source.width > dest.width || source.height > dest.height) {
 	          scaleFactor = scaleX < scaleY ? scaleX : scaleY;
-	          break;
-	        case FITS.NONE:
+	        } else {
 	          scaleFactor = 1.0;
-	          break;
-	        case FITS.BEST_FILL:
-	        default:
-	          scaleFactor = scaleX > scaleY ? scaleX : scaleY;
-	          break;
-	      }
-
-	      result.width = Math.round(source.width * scaleFactor);
-	      result.height = Math.round(source.height * scaleFactor);
-
-	      switch (align.x) {
-	        case ALIGNS.LEFT:
-	          result.x = 0;
-	          break;
-	        case ALIGNS.RIGHT:
-	          result.x = dest.width - result.width;
-	          break;
-	        case ALIGNS.MIDDLE:
-	        case ALIGNS.CENTER:
-	          result.x = (dest.width - result.width) / 2;
-	          break;
-	      }
-
-	      switch (align.y) {
-	        case ALIGNS.TOP:
-	          result.y = 0;
-	          break;
-	        case ALIGNS.BOTTOM:
-	          result.y = dest.height - result.height;
-	          break;
-	        case ALIGNS.MIDDLE:
-	        case ALIGNS.CENTER:
-	          result.y = (dest.height - result.height) / 2;
-	          break;
-	      }
-
-	      return result;
+	        }
+	        break;
+	      case FITS.BEST_FIT:
+	        scaleFactor = scaleX < scaleY ? scaleX : scaleY;
+	        break;
+	      case FITS.NONE:
+	        scaleFactor = 1.0;
+	        break;
+	      case FITS.BEST_FILL:
+	      default:
+	        scaleFactor = scaleX > scaleY ? scaleX : scaleY;
+	        break;
 	    }
-	  }]);
+
+	    result.width = Math.round(source.width * scaleFactor);
+	    result.height = Math.round(source.height * scaleFactor);
+
+	    switch (align.x) {
+	      case ALIGNS.LEFT:
+	        result.x = 0;
+	        break;
+	      case ALIGNS.RIGHT:
+	        result.x = dest.width - result.width;
+	        break;
+	      case ALIGNS.MIDDLE:
+	      case ALIGNS.CENTER:
+	        result.x = (dest.width - result.width) / 2;
+	        break;
+	    }
+
+	    switch (align.y) {
+	      case ALIGNS.TOP:
+	        result.y = 0;
+	        break;
+	      case ALIGNS.BOTTOM:
+	        result.y = dest.height - result.height;
+	        break;
+	      case ALIGNS.MIDDLE:
+	      case ALIGNS.CENTER:
+	        result.y = (dest.height - result.height) / 2;
+	        break;
+	    }
+
+	    return result;
+	  }
+
+	  Resizer.ALIGNS = ALIGNS;
+	  Resizer.FITS = FITS;
 
 	  return Resizer;
 	}();
-
-	module.exports = Resizer;
 
 /***/ },
 /* 3 */

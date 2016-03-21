@@ -1,7 +1,5 @@
 let Resizer = require('../../../src/ffcp.js')
 
-let resizer = new Resizer()
-
 let container = document.querySelector('#demo-container')
   , image = document.querySelector('#demo-content')
 
@@ -12,9 +10,11 @@ let currentConfig = {
   forceStyle: true
 }
 
+Resizer.resizeAll(document.body)
+
 window.resizeImage = function (options) {
   Object.assign(currentConfig, options)
-  resizer.resize(container, image, currentConfig)
+  Resizer.resize(container, image, currentConfig)
 }
 
 window.landscape = function () {
